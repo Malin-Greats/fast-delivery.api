@@ -1,66 +1,54 @@
-import { jwt, Payload } from '../../common/_helpers/jwt.util';
-import { Role } from '../domain/role.model';
-import { User } from '../domain/user.model';
-import { UserIn } from '../dto/user/create-user.dto';
-import { toUserOut, UserOut } from '../dto/user/get-user.dto';
-import { IRoleRepository } from '../ports/role-repository.port';
-import { IUserRepository } from '../ports/user-repositoty.port';
-import { IUserService } from'../ports/user-service.port';
+import logger from "../../shared/errors/logger";
+import { UserIn } from "../dto/user/create-user.dto";
+import { toUserOut, UserOut } from "../dto/user/get-user.dto";
+import { IRoleRepository } from "../ports/role-repository.port";
+import { IUserRepository } from "../ports/user-repository.port";
+import { IUserService } from "../ports/user-service.port";
 
+export class UserService implements IUserService{
 
-export class UserService implements  IUserService{
+    constructor(private _userRepository:IUserRepository, private _roleRepository:IRoleRepository){}
 
-    constructor(private _userRepo:IUserRepository, private _roleRepo:IRoleRepository){}
-
-   async updateUser(userId: string, userInput: UserIn): Promise<UserOut> {
-        const role =await this.getRole(userInput.roleId)
-        const user= await this._userRepo.update(userId, userInput)
-        let userOut = toUserOut(user, role.name)
-        return  userOut
-    }
-
-    async findUserById(userId: string): Promise<UserOut> {
-       const user= await this._userRepo.findById(userId)
-       const role =await this.getRole(user.roleId)
-       const userOut = toUserOut(user, role.name)
-       return userOut
-    }
-
-    async findUserEmail(email: string): Promise<UserOut> {
-       const user = await this._userRepo.findByEmail(email)
-       const role =await this.getRole(user.roleId)
-       const userOut = toUserOut(user, role.name)
-       return userOut
-    }
-    async findUserByContact(contact: string): Promise<UserOut> {
-        let  user = await this._userRepo.findByContact(contact)
-        const role =await this.getRole(user.roleId)
-        let userOut = toUserOut(user, role.name)
+    async createUser(userIn: UserIn): Promise<UserOut> {
+        const userRole= await this._roleRepository.findByName(userIn.role)
+        const user= await this._userRepository.create(userIn, userRole)
+        const userOut= toUserOut(user,user.role.name)
         return userOut
-
     }
-    async deleteUser(userId: string): Promise<boolean> {
-        return await this._userRepo.delete(userId)
+    async updateUser(userId: string, userIn: UserIn): Promise<UserOut> {
+        const user= await this._userRepository.update(userId, userIn)
+        const userOut= toUserOut(user,user.role.name)
+        return userOut
     }
-
-    async findAllUsers(): Promise<UserOut[]> {
-        let usersOut:UserOut[]=[]
-        const users:User[]=await this._userRepo.findAll()
+    async deleteUser(userId: string): Promise<UserOut> {
+        const user= await this._userRepository.delete(userId)
+        const userOut= toUserOut(user,user.role.name)
+        return userOut
+    }
+    async findUserById(userId: string): Promise<UserOut> {
+        const user= await this._userRepository.findById(userId)
+        const userOut= toUserOut(user,user.role.name)
+        return userOut
+    }
+    async findUserByEmail(email: string): Promise<UserOut> {
+        const user= await this._userRepository.findByEmail(email)
+        const userOut= toUserOut(user,user.role.name)
+        return userOut
+    }
+    async findAllUsers(filterBy: string): Promise<UserOut[]> {
+        const users= await this._userRepository.findAll(filterBy)
+        let usersOut:UserOut[]=[];
         for (let user of users){
-            const role =await this.getRole(user.roleId)
-            let userOut = toUserOut(user, role.name)
+            const userOut= toUserOut(user,user.role.name)
+            logger.info(userOut)
             usersOut.push(userOut)
         }
         return usersOut
     }
-    async getRole(roleId:string):Promise<Role>{
-        const role=await this._roleRepo.findById(roleId)
-        return role
-    }
-    async userProfile(token:string): Promise<UserOut>{
-        const payload= <Payload>jwt.verifyToken(token) 
-        const userOut = await this.findUserById(payload.userId)
+    async findUserByContact(contact: string): Promise<UserOut> {
+        const user= await this._userRepository.findByContact(contact)
+        const userOut= toUserOut(user,user.role.name)
         return userOut
     }
-
+    
 }

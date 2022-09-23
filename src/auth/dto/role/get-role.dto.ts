@@ -1,13 +1,13 @@
 import { Role } from "../../domain/role.model"
 
 export interface RoleOut{
-    ID          :string
+    id          :string
     name        :string
     slug?       :string
-    createdAt   :Date
+    created_at   :Date
 }
 
-export function toRoleOut({ID, name,createdAt}:Role):RoleOut{
-    let roleOut={ID, name, createdAt}
+export function toRoleOut({id, name,created_at}:Role):RoleOut{
+    let roleOut={id, name, created_at}
     return roleOut
 }

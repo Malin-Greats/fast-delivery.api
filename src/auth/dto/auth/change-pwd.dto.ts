@@ -1,5 +1,5 @@
 export interface ChangePasswordIn{
-    userId:string
-    oldPassword:string
-    newPassword:string
+    user_id:string
+    old_password:string
+    new_password:string
 }

@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserIn } from "../dto/user/create-user.dto";
 import { Role } from "./role.model";
 
@@ -6,45 +6,51 @@ import { Role } from "./role.model";
 @Entity()
 export class User extends BaseEntity{
     @PrimaryGeneratedColumn()
-    ID!: string;
-
-    @Column({unique:true})
-    username!: string;
-
-    @Column({unique:true}) 
-    contact!:string
+    id!: string;
 
     @Column({unique:true})
     email!:string
 
     @Column()
+    firstname!: string;
+
+    @Column()
+    lastname!: string;
+
+    @Column({unique:true})
+    contact!:string
+
+    @Column()
     password!: string;
 
     @Column()
-    isVerified!:boolean
+    is_verified!:boolean
 
     @Column()
-    isActive!:boolean
+    is_active!:boolean
 
-    @Column()
-    roleId!:string
 
-    @Column()
-    createdAt!:Date
+    @CreateDateColumn()
+    created_at!:Date
+
+    @UpdateDateColumn()
+    updated_at!:Date
+
+    @ManyToOne(()=>Role,
+    role =>role.users)
+    @JoinColumn({name:"role_id"})
+    role!:Role
 
 }
 
-export function toNewUser({ username, email, contact,roleId, password}:UserIn):User{
+export function toNewUser({ firstname, lastname, email, contact, password}:UserIn):User{
     let  user:User = new User()
-    
-    user.username =username
+    user.firstname =firstname
+    user.lastname =lastname
     user.email =email
     user.contact =contact
-    user.isActive=true
-    user.isVerified=false
-    user.createdAt=new Date()
+    user.is_active=true
+    user.is_verified=false
     user.password=password
-    user.roleId=roleId
-
     return   user
 }

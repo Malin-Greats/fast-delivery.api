@@ -1,42 +1,40 @@
-import { toNewRole } from "../domain/role.model";
+import AppError from "../../shared/errors/error";
 import { RoleIn } from "../dto/role/create-role.dto";
 import { RoleOut, toRoleOut } from "../dto/role/get-role.dto";
 import { IRoleRepository } from "../ports/role-repository.port";
-import { IRolService } from "../ports/role-service.port";
+import { IRoleService } from "../ports/role-service";
 
-export class RoleService implements IRolService{
+export class RoleService implements IRoleService{
 
-    constructor(private _roleRepo:IRoleRepository){}
+    constructor(private _roleRepository:IRoleRepository){}
 
-    async createRole(roleRequest: RoleIn): Promise<RoleOut> {
-       const role= await this._roleRepo.create(roleRequest)
-       const roleOut=toRoleOut(role)
-       return roleOut
+    async createRole(roleIn: RoleIn): Promise<RoleOut> {
+        const role = await this._roleRepository.create(roleIn)
+        return toRoleOut(role)
     }
-
-
-   async findRoleById(roleId: string): Promise<RoleOut> {
-        const role= await this._roleRepo.findById(roleId)
-        const roleOut=toRoleOut(role)
-        return roleOut
+    async findRoleById(roleId: string): Promise<RoleOut> {
+        const role= await this._roleRepository.findById(roleId)
+        return toRoleOut(role)
     }
     async findRoleByName(roleName: string): Promise<RoleOut> {
-        const role= await this._roleRepo.findById(roleName)
-        const roleOut=toRoleOut(role)
-        return roleOut
+        const role= await this._roleRepository.findByName(roleName)
+        return toRoleOut(role)
     }
-
-    async updateRole(roleId: string, updateReq: RoleIn): Promise<RoleOut> {
-        throw new Error("Method not implemented.");
-    }
-
-    async findAllRoles():Promise<RoleOut[]>{
-        const rolesOut:RoleOut[]=[]
-       const roles = await this._roleRepo.findAll()
-       for (let role of roles){
+    async findAllRoles(): Promise<RoleOut[]> {
+        let rolesOut:RoleOut[]=[]
+        const roles=await this._roleRepository.findAll()
+        for (let role of roles){
             const roleOut=toRoleOut(role)
             rolesOut.push(roleOut)
-       }
-       return rolesOut
+        }
+        return  rolesOut
     }
+    async updateRole(roleId: string, roleIn: RoleIn): Promise<RoleOut> {
+        const role= await this._roleRepository.update(roleId, roleIn)
+        return  toRoleOut(role)
+    }
+    async deleteRole(roleId: string): Promise<RoleOut> {
+        throw new Error("Method not implemented.");
+    }
+    
 }

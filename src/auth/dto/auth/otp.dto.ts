@@ -1,15 +1,14 @@
-export   interface OtpIn{
+export   interface OTPIn{
     otp:string
-    userId:string
+    user_id:string
 }
 
-export   interface OtpOut{
-    ID:string
-    userId:string
-    expiresIn:number
-    isExpired:boolean
+export   interface OTPOut{
+    id:string
+    user_id:string
+    expires_in:number
     otp:string
-    createAt:string
+    created_at:string
 }
 
 

@@ -3,6 +3,10 @@ import { Role } from "./auth/domain/role.model";
 import { User } from "./auth/domain/user.model"; 
 import { UserOTP } from "./auth/domain/otp.model";
 import {singleton} from 'tsyringe'
+import logger from "./shared/errors/logger";
+import { Vehicle } from "./drivers/domain/vehicles.model";
+import { Driver } from "./drivers/domain/driver.model";
+import { DriverDocuments } from "./drivers/domain/driver-docs.model";
 
 @singleton()
 export class psqlDB{
@@ -15,16 +19,16 @@ export class psqlDB{
                 port: 5432,
                 username: "elfyntan",
                 password: "samieF263",
-                database: "uber_app",
+                database: "fastd",
                 synchronize: true,
                 logging: false,
-                entities: [User, Role, UserOTP],
+                entities: [User, Role, UserOTP, Vehicle, Driver,DriverDocuments],
             })
             psqlDB.DataSrc.initialize()
                 .then(() => {
-                    console.log("TypeORM initialized successfully!")
+                    logger.info("TypeORM initialized successfully!")
                 })
-                .catch((error) => console.error(`TypeORM initialization failed! ${error}`))
+                .catch((error) => logger.error(`TypeORM initialization failed! ${error}`))
         } catch (error) {
             console.error('[mysql.connector][init][Error]: ', error);
             throw new Error('failed to initialized pool');

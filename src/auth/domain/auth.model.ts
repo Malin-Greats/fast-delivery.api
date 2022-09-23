@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, Generated, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, Generated, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { User } from "./user.model";
 
   export interface IUserToken {
     id: string;
@@ -7,18 +8,20 @@ import { Column, CreateDateColumn, Entity, Generated, PrimaryGeneratedColumn, Up
     created_at: Date;
     updated_at: Date;
   }
-  @Entity('user_tokens')
-  export class UserToken implements IUserToken {
+  @Entity()
+  export class UserToken extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: string;
 
     @Column()
-    @Generated()
     token!: string;
 
     @Column()
     user_id!: string;
 
+    @OneToOne(type => User) @JoinColumn()
+    user!: User;
+    
     @CreateDateColumn()
     created_at!: Date;
 

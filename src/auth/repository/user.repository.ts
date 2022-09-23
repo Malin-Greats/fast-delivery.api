@@ -1,73 +1,124 @@
-import { Repository } from "typeorm";
-import AppError from "../../common/errors/appErrors";
-import { psqlDB } from "../../data-source";
-import {  toNewUser, User } from "../domain/user.model";
+import { EntityNotFoundError, Repository } from "typeorm";
+import AppError from "../../shared/errors/error";
+import logger from "../../shared/errors/logger";
+import { toNewUser, User } from "../domain/user.model";
 import { UserIn } from "../dto/user/create-user.dto";
-import { IUserRepository } from "../ports/user-repositoty.port";
-
+import { IUserRepository } from "../ports/user-repository.port";
+import { Hashing as  hash } from "../../shared/hashing";
+import { Role } from "../domain/role.model";
 export class UserRepository implements IUserRepository{
 
+    constructor(private ormRepository:Repository<User>){}
 
-    constructor(private ormRepository: Repository<User>){}
-
-    async create(userRequest: UserIn):Promise<User>{
-        const newUser=toNewUser(userRequest)
+    async create(userIn: UserIn, userRole:Role): Promise<User> {
+        const newUser = toNewUser(userIn);
+         newUser.role = userRole
         const user = await this.ormRepository.create(newUser);
-        let savedUser=await this.ormRepository.save(user)
+
+        let savedUser!:User
+        try {
+            savedUser=await this.ormRepository.save(user)
+        } catch (error ) {
+            logger.error(error)
+            throw error
+        }
         return savedUser
     }
 
-    async findAll(): Promise<User[]> {
+    async update(userId: string, userIn: UserIn): Promise<User> {
+        const user = await this.findById(userId);
+
+        Object.assign(user, userIn);
+        let updatedUser!:User
+        try {
+            updatedUser=await this.ormRepository.save(user);
+        } catch (error) {
+            logger.error(error)
+            throw error
+        }
+        return  updatedUser
+    }
+
+    async delete(userId: string): Promise<User> {
+        const user = await this.findById(userId);
+        let removedUser!:User;
+        try {
+            removedUser=await this.ormRepository.remove(user);
+        } catch (error) {
+            logger.error(error)
+            throw error
+        }
+        return removedUser;
+    }
+
+    async findById(userId: string): Promise<User> {
+        let user!:User;
+        try {
+            user =  await this.ormRepository.findOneOrFail({ 
+                where: { id:userId },
+                relations: {role: true,}
+            })
+        } catch (error) {
+            if (error instanceof EntityNotFoundError){
+                throw new AppError(`The user with id: ${userId} does not exist!`);
+            }else{
+                logger.error(error)
+                throw error
+            }
+        }
+        return  user
+    }
+
+    async findByEmail(email: string): Promise<User> {
+        let user!:User;
+        try {
+            user = await this.ormRepository.findOneOrFail({
+                 where: { email }, 
+                 relations: {role: true,}
+            })
+        } catch (error) {
+            if (error instanceof EntityNotFoundError){
+                throw new AppError(`The user with email: ${email} does not exist!`);
+            }else{
+                throw error
+            }
+        } 
+        return  user
+    }
+
+    async findAll(filterBy: string): Promise<User[]> {
         let users!:User[]
         try {
-             users =await this.ormRepository.find()
+            users =await this.ormRepository.find({
+                relations: {role: true}
+            })
+
         } catch (error) {
-            console.log(error)
+            logger.error(error)
             throw  error
         }
         return users
     }
 
-    async findById(userId: string):Promise<User>{
-        const user  = await this.ormRepository.findOneOrFail({ where: { ID:userId }})
-        if (!user) {
-            throw new AppError(`The user with id: ${userId} does not exist!`);
-          }
-        return  user
-    }
-
-    async delete(userId:string):Promise<boolean>{
-        const user = await this.ormRepository.findOneOrFail({ where: { ID:userId }});
-        if (!user) {
-            throw new AppError(`The user with id: ${userId} does not exist!`);
-        }
-        await this.ormRepository.remove(user);
-        return true;
-    }
-
-    async findByEmail(email: string):Promise<User>{
-        const user  = await this.ormRepository.findOneOrFail({ where: { email }})
-        if (!user) {
-            throw new AppError(`The user with email: ${email} does not exist!`);
-          }
-        return  user
-    }
-
     async findByContact(contact: string):Promise<User>{
-        const user  = await this.ormRepository.findOneOrFail({ where: { contact }})
-        if (!user) {
-            throw new AppError(`The user with contact: ${contact} does not exist!`);
-          }
+        let user!:User;
+        try {
+            user = await this.ormRepository.findOneOrFail({ 
+                where: { contact },
+                relations: {role: true,}
+            })
+        } catch (error) {
+            if (error instanceof EntityNotFoundError){
+                throw new AppError(`The user with contact: ${contact} does not exist!`);
+            }else{
+                logger.error(error)
+                throw error
+            }
+        } 
         return  user
     }
 
-    async update(userId:string, userRequest:UserIn):Promise<User>{
-        const user = await this.ormRepository.findOneOrFail({ where: { ID:userId }});
-        if (!user) {
-            throw new AppError(`The user with id: ${userId} does not exist!`);
-        }
-        Object.assign(user, userRequest);
-        const updatedUser=await this.ormRepository.save(user);
-        return  updatedUser
-    }
+    
+
 }
+

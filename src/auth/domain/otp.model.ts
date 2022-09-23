@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./user.model";
 
 @Entity()
 export class UserOTP  extends BaseEntity {
@@ -9,11 +10,14 @@ export class UserOTP  extends BaseEntity {
   otp!: string;
 
   @Column()
-  userId!: string;
+  user_id!: string;
 
   @Column({type: 'bigint'})
   createdAt!: number;
 
-    @Column({type: 'bigint'})
+  @Column({type: 'bigint'})
   expiredAt!: number;
+
+  @OneToOne(type => User) @JoinColumn({name:"user_id"})
+   user!: User;
 }
