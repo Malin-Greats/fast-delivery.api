@@ -1,10 +1,9 @@
-import { RoleIn } from "../../auth/dto/role/create-role.dto";
-import { UserIn } from "../../auth/dto/user/create-user.dto";
+import { UserIn } from "../../auth/domain/dto/user/user.dto";
 import { IRoleRepository } from "../../auth/ports/role-repository.port";
 import { IUserRepository } from "../../auth/ports/user-repository.port";
-import { IUserService } from "../../auth/ports/user-service.port";
 import logger from "../../shared/errors/logger";
-import { DriverIn, DriverOut, toDriverOut } from "../domain/dto/driver.dto";
+import { DriverApprovalStatus } from "../domain/driver.model";
+import { DriverIn, DriverOut, IDriverApprovalStatus, toDriverOut } from "../domain/dto/driver.dto";
 import { IDriverRepository } from "../ports/driver-repository.port";
 import { IDriverService } from "../ports/driver-service.port";
 
@@ -38,8 +37,24 @@ export class DriverService implements IDriverService{
         return driversOut
     }
 
-    approveDriver(driverId: string): Promise<DriverOut> {
-        throw new Error("Method not implemented.");
-    }
     
+    async approveDriver(driverId: string): Promise<DriverApprovalStatus> {
+        const aprovalStatus = {approval_status:DriverApprovalStatus.APPROVED}
+        const driver = await this._driverRepository.update(driverId, aprovalStatus)
+        return driver.approval_status
+    }
+    async rejectDriver(driverId: string): Promise<DriverApprovalStatus> {
+        const aprovalStatus = {approval_status:DriverApprovalStatus.REJECTED}
+        const driver = await this._driverRepository.update(driverId, aprovalStatus)
+        return driver.approval_status
+    }
+
+    async approvalStatus(driverId:string):Promise<IDriverApprovalStatus>{
+       const driver= await this._driverRepository.findById(driverId)
+       const aprovalStatus:IDriverApprovalStatus={approval_status: driver.approval_status, is_approved:false}
+       if (driver.approval_status==DriverApprovalStatus.APPROVED){
+        aprovalStatus.is_approved=true
+       }
+       return aprovalStatus
+    }
 }

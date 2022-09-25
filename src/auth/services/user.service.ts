@@ -1,6 +1,5 @@
 import logger from "../../shared/errors/logger";
-import { UserIn } from "../dto/user/create-user.dto";
-import { toUserOut, UserOut } from "../dto/user/get-user.dto";
+import { UserIn, UserOut, toUserOut } from "../domain/dto/user/user.dto";
 import { IRoleRepository } from "../ports/role-repository.port";
 import { IUserRepository } from "../ports/user-repository.port";
 import { IUserService } from "../ports/user-service.port";

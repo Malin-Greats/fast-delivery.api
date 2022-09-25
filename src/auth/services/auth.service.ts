@@ -1,11 +1,10 @@
 import AppError from "../../shared/errors/error";
 import { Hashing as hash } from "../../shared/hashing";
 import { jwt } from "../../shared/jwt.util";
-import { IJWTPayload } from "../dto/auth/jwt.dto";
-import { LoginIn, LoginOut } from "../dto/auth/login.dto";
-import { OTPIn, OTPOut } from "../dto/auth/otp.dto";
-import { UserIn } from "../dto/user/create-user.dto";
-import { toUserOut, UserOut } from "../dto/user/get-user.dto";
+import { IJWTPayload } from "../domain/dto/auth/jwt.dto";
+import { LoginIn, LoginOut } from "../domain/dto/auth/login.dto";
+import { OTPIn, OTPOut } from "../domain/dto/auth/otp.dto";
+import { UserIn, UserOut, toUserOut } from "../domain/dto/user/user.dto";
 import { IAuthService } from "../ports/auth-service.port";
 import { IRoleRepository } from "../ports/role-repository.port";
 import { IUserRepository } from "../ports/user-repository.port";

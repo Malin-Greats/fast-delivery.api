@@ -1,8 +1,8 @@
 import { EntityNotFoundError, Repository } from "typeorm";
 import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
-import { DriverDocuments, NewDriverDocuments } from "../domain/driver-docs.model";
-import { DriverDocumentsIn } from "../domain/dto/driver-docs.dto";
+import { DriverDocuments } from "../domain/driver-docs.model";
+import { DriverDocumentsIn, NewDriverDocuments } from "../domain/dto/driver-docs.dto";
 import { IDriverDocumentsRepository } from "../ports/driver-docs-repository.port";
 
 export class DriverDocumentsRepository implements IDriverDocumentsRepository{

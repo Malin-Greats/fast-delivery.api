@@ -1,7 +1,6 @@
-import { LoginIn, LoginOut } from "../dto/auth/login.dto"
-import { OTPIn, OTPOut } from "../dto/auth/otp.dto"
-import { UserIn } from "../dto/user/create-user.dto"
-import { UserOut } from "../dto/user/get-user.dto"
+import { LoginIn, LoginOut } from "../domain/dto/auth/login.dto"
+import { OTPIn, OTPOut } from "../domain/dto/auth/otp.dto"
+import { UserIn, UserOut } from "../domain/dto/user/user.dto"
 export interface IAuthService{
     signUp(userIn:UserIn):Promise<UserOut>
     login(loginIn:LoginIn):Promise<LoginOut>

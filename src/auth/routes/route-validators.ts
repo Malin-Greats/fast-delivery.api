@@ -14,9 +14,7 @@ export const routeValidate={
                 }
                 return true;
             }),
-        ]
-        ,
-        signUpDriver:[],
+        ],
         login:[
            
                 body("email").isEmail().withMessage("Invalid email address"),
@@ -27,14 +25,7 @@ export const routeValidate={
     role:{
         create:[
             body("name").not().isEmpty().trim().escape().withMessage("Role name is required")
-        ],
-        getById:[],
-        getByName:[],
-    },
-    user:{
-        create:[],
-        getById:[],
-        getByName:[],
+        ]
     },
     profile:{
        edit:[]

@@ -1,7 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "../../auth/domain/user.model";
 import { DriverDocuments } from "./driver-docs.model";
-import { DriverIn } from "./dto/driver.dto";
 import { Vehicle } from "./vehicles.model";
 export enum DriverApprovalStatus{
     PENDING="pending",
@@ -30,7 +29,7 @@ export class  Driver extends BaseEntity{
         type:"enum",
         enum:DriverApprovalStatus
     })
-    approval_status!:string
+    approval_status!:DriverApprovalStatus
 
     @Column({default:0})
     overall_rating!:number
@@ -47,13 +46,7 @@ export class  Driver extends BaseEntity{
     @OneToOne(type => DriverDocuments) @JoinColumn({name:"driver_documents_id"})
    documents!: DriverDocuments;
 
-   @OneToOne(type => User) @JoinColumn({name:"user_id"})
+   @OneToOne(type => User,{eager:true}) @JoinColumn({name:"user_id"})
    user!: User;
 }
 
-export function NewDriver():Driver{
-    const driver = new Driver()
-    driver.ride_status= RideStatus.NO_RIDE
-    driver.approval_status=DriverApprovalStatus.PENDING
-    return driver
-}

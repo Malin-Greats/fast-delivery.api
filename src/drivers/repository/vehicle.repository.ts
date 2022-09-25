@@ -1,8 +1,8 @@
 import { EntityNotFoundError, Repository } from "typeorm";
 import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
-import { VehicleIn } from "../domain/dto/vehicle.dto";
-import { NewVehicle, Vehicle } from "../domain/vehicles.model";
+import { NewVehicle, VehicleIn } from "../domain/dto/vehicle.dto";
+import {  Vehicle } from "../domain/vehicles.model";
 import { IVehicleRepository } from "../ports/vehicle-repository.port";
 
 export class VehicleRepository implements IVehicleRepository{

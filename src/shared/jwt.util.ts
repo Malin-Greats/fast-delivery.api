@@ -1,6 +1,7 @@
 import { sign, SignOptions, verify } from "jsonwebtoken"
-import { IToken } from "../auth/dto/auth/jwt.dto";
+import { IToken } from "../auth/domain/dto/auth/jwt.dto";
 import dotenv from 'dotenv';
+import AppError from "./errors/error";
 dotenv.config();
 export interface Payload{
     userId:string;
@@ -16,7 +17,7 @@ class JwtAuth{
             const SECRET=process.env.JWT_SECRET_KEY as string
             token= sign(payload,SECRET ,  { expiresIn})
         } catch (error) {
-            throw error
+            throw new AppError("Unauthorized Access. Please login!")
         }
 
         return {token, expiresIn}
@@ -27,7 +28,7 @@ class JwtAuth{
             const SECRET=process.env.JWT_SECRET_KEY as string
             return await verify(token, SECRET) as Payload
         } catch (error) {
-            throw error
+           throw new AppError("Unauthorized Access.")
         }
 
     }

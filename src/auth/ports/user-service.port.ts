@@ -1,5 +1,4 @@
-import { UserIn } from "../dto/user/create-user.dto"
-import { UserOut } from "../dto/user/get-user.dto"
+import { UserIn, UserOut } from "../domain/dto/user/user.dto"
 
 export interface IUserService{
         createUser(userIn:UserIn):Promise<UserOut>
