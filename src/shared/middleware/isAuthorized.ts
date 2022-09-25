@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import { ERole as role } from "../../auth/domain/role.model"
-import { IJWTPayload } from "../../auth/dto/auth/jwt.dto"
+import { IJWTPayload } from "../../auth/domain/dto/auth/jwt.dto"
 import { jwt } from "../jwt.util"
 export const isAuthorized=(validRoles:role[])=>async (req:Request,res:Response,next:NextFunction)=>{
     const authHeaderToken =req.get('Authorization')

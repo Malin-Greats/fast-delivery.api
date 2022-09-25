@@ -1,8 +1,8 @@
 import { EntityNotFoundError, Repository } from "typeorm";
 import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
-import { Role, toNewRole } from "../domain/role.model";
-import { RoleIn } from "../dto/role/create-role.dto";
+import { RoleIn, toNewRole } from "../domain/dto/role/role.dto";
+import { Role } from "../domain/role.model";
 import { IRoleRepository } from "../ports/role-repository.port";
 
 export class RoleRepository implements IRoleRepository{

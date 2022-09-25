@@ -2,8 +2,8 @@ import { EntityNotFoundError, Repository } from "typeorm";
 import { User } from "../../auth/domain/user.model";
 import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
-import { Driver, NewDriver } from "../domain/driver.model";
-import { DriverIn } from "../domain/dto/driver.dto";
+import { Driver } from "../domain/driver.model";
+import { DriverIn, IDriverApproval, NewDriver } from "../domain/dto/driver.dto";
 import { IDriverRepository } from "../ports/driver-repository.port";
 
 export class DriverRepository implements IDriverRepository{
@@ -34,7 +34,7 @@ export class DriverRepository implements IDriverRepository{
         try {
             driver =  await this.ormRepository.findOneOrFail({ 
                 where: { id },
-                relations: { user:true}
+                relations: { user:true},
             })
         } catch (error) {
             if (error instanceof EntityNotFoundError){
@@ -47,8 +47,18 @@ export class DriverRepository implements IDriverRepository{
         return  driver
     }
     
-    async update(id: string, driverIn: DriverIn): Promise<Driver> {
-        throw new Error("Method not implemented.");
+    async update(id: string, driverIn: DriverIn|IDriverApproval): Promise<Driver> {
+        const driver = await this.findById(id);
+
+        Object.assign(driver, driverIn);
+        let updateDriver!:Driver
+        try {
+            updateDriver=await this.ormRepository.save(driver);
+        } catch (error) {
+            logger.error(error)
+            throw error
+        }
+        return  updateDriver
     }
     
     async findAll(): Promise<Driver[]> {

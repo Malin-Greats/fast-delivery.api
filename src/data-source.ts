@@ -26,12 +26,14 @@ export class psqlDB{
             })
             psqlDB.DataSrc.initialize()
                 .then(() => {
-                    logger.info("TypeORM initialized successfully!")
+                    logger.info("Database connected successfully!")
                 })
-                .catch((error) => logger.error(`TypeORM initialization failed! ${error}`))
+                .catch((error) => logger.error(`Connection to database failed! ${error}`))
         } catch (error) {
             console.error('[mysql.connector][init][Error]: ', error);
             throw new Error('failed to initialized pool');
         }
     }
+
+    
 }

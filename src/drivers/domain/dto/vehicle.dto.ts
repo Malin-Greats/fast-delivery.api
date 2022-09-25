@@ -1,4 +1,3 @@
-import { Driver } from "../driver.model"
 import { Vehicle } from "../vehicles.model"
 
 export interface VehicleIn{
@@ -25,6 +24,22 @@ export interface VehicleOut{
     created_at:Date
     updated_at:Date
     // driver: Driver
+}
+
+
+export function NewVehicle({model, make,capacity, driver_id, vehicle_insurance_registration, 
+    vehicle_technical_certificate, year, color, plate_number}:VehicleIn):Vehicle{
+    const vehicle = new Vehicle()
+    vehicle.model=model
+    vehicle.make= make
+    vehicle.year=year
+    vehicle.color=color
+    vehicle.capacity=capacity
+    vehicle.driver_id=driver_id
+    vehicle.plate_number=plate_number
+    vehicle.vehicle_technical_certificate =vehicle_technical_certificate
+    vehicle.vehicle_insurance_registration=vehicle_insurance_registration
+    return vehicle
 }
 
 export function toVehicleOut({id, make, model, year, capacity, plate_number, color, 

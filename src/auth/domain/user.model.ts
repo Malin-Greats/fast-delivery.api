@@ -1,5 +1,5 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { UserIn } from "../dto/user/create-user.dto";
+import { UserIn } from "./dto/user/user.dto";
 import { Role } from "./role.model";
 
 
@@ -23,6 +23,9 @@ export class User extends BaseEntity{
     @Column()
     password!: string;
 
+    @Column({nullable:true})
+    profile_photo?:string
+
     @Column()
     is_verified!:boolean
 
@@ -37,20 +40,10 @@ export class User extends BaseEntity{
     updated_at!:Date
 
     @ManyToOne(()=>Role,
-    role =>role.users)
+    role =>role.users,
+    {eager:true})
     @JoinColumn({name:"role_id"})
     role!:Role
 
 }
 
-export function toNewUser({ firstname, lastname, email, contact, password}:UserIn):User{
-    let  user:User = new User()
-    user.firstname =firstname
-    user.lastname =lastname
-    user.email =email
-    user.contact =contact
-    user.is_active=true
-    user.is_verified=false
-    user.password=password
-    return   user
-}

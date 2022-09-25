@@ -1,6 +1,4 @@
-import AppError from "../../shared/errors/error";
-import { RoleIn } from "../dto/role/create-role.dto";
-import { RoleOut } from "../dto/role/get-role.dto";
+import { RoleIn, RoleOut } from "../domain/dto/role/role.dto"
 
 export interface IRoleService{
     createRole(roleIn:RoleIn):Promise<RoleOut>

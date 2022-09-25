@@ -1,6 +1,5 @@
-import AppError from "../../shared/errors/error";
-import { RoleIn } from "../dto/role/create-role.dto";
-import { RoleOut, toRoleOut } from "../dto/role/get-role.dto";
+
+import { RoleIn, RoleOut, toRoleOut } from "../domain/dto/role/role.dto";
 import { IRoleRepository } from "../ports/role-repository.port";
 import { IRoleService } from "../ports/role-service";
 

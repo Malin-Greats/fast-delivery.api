@@ -1,11 +1,13 @@
 import { EntityNotFoundError, Repository } from "typeorm";
 import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
-import { toNewUser, User } from "../domain/user.model";
-import { UserIn } from "../dto/user/create-user.dto";
 import { IUserRepository } from "../ports/user-repository.port";
 import { Hashing as  hash } from "../../shared/hashing";
 import { Role } from "../domain/role.model";
+import { UserIn, toNewUser } from "../domain/dto/user/user.dto";
+import { User } from "../domain/user.model";
+import { IPassword } from "../domain/dto/auth/change-pwd.dto";
+import { IProfilePhoto } from "../domain/dto/profile/profile.dto";
 export class UserRepository implements IUserRepository{
 
     constructor(private ormRepository:Repository<User>){}
@@ -13,10 +15,10 @@ export class UserRepository implements IUserRepository{
     async create(userIn: UserIn, userRole:Role): Promise<User> {
         const newUser = toNewUser(userIn);
          newUser.role = userRole
-        const user = await this.ormRepository.create(newUser);
 
         let savedUser!:User
         try {
+            const user = await this.ormRepository.create(newUser);
             savedUser=await this.ormRepository.save(user)
         } catch (error ) {
             logger.error(error)
@@ -25,7 +27,7 @@ export class UserRepository implements IUserRepository{
         return savedUser
     }
 
-    async update(userId: string, userIn: UserIn): Promise<User> {
+    async update(userId: string, userIn: UserIn|IPassword | IProfilePhoto): Promise<User> {
         const user = await this.findById(userId);
 
         Object.assign(user, userIn);

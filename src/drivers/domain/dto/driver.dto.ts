@@ -1,14 +1,14 @@
-import { User } from "../../../auth/domain/user.model"
-import { IProfile } from "../../../auth/dto/profile/profile.dto"
-import { UserIn } from "../../../auth/dto/user/create-user.dto"
-import { UserOut } from "../../../auth/dto/user/get-user.dto"
-import { Driver } from "../driver.model"
-import { Vehicle } from "../vehicles.model"
-import { DriverDocumentsOut } from "./driver-docs.dto"
-import { VehicleOut } from "./vehicle.dto"
+import { IUserProfile } from "../../../auth/domain/dto/profile/profile.dto"
+import { UserIn } from "../../../auth/domain/dto/user/user.dto"
+import { Driver, DriverApprovalStatus, RideStatus } from "../driver.model"
 
-export interface DriverIn extends UserIn{
-
+export interface DriverIn extends UserIn{}
+export interface IDriverApproval{
+    approval_status:DriverApprovalStatus
+}
+export interface IDriverApprovalStatus{
+    approval_status:DriverApprovalStatus
+    is_approved:boolean
 }
 interface driverInfo{
         ride_status:string
@@ -18,14 +18,25 @@ interface driverInfo{
 export interface DriverOut{
     id:string
     driving_info:driverInfo
-    profile:IProfile
+    profile:IUserProfile
 }
+
+export function NewDriver():Driver{
+    const driver = new Driver()
+    driver.ride_status= RideStatus.NO_RIDE
+    driver.approval_status=DriverApprovalStatus.PENDING
+    return driver
+}
+
 export function toDriverOut({  id, ride_status, approval_status,overall_rating, user}:Driver):DriverOut{
     const info:driverInfo={
         ride_status, approval_status, overall_rating,
     }
-    const {firstname, lastname, email, contact}=user
-    const userOut:IProfile={firstname, lastname, email, contact}
+
+    const {firstname, lastname, email, contact, role, }=user
+    const userOut:IUserProfile={
+        firstname, lastname, email, contact,role: role.name
+    }
     const driver:DriverOut ={id, profile:userOut,driving_info:info}
     return driver
 }

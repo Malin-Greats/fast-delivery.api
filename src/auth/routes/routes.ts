@@ -45,12 +45,13 @@ export function authRoutes():Router{
     .post("/logout", async(req:Request,res:Response)=>{authHandler.loggingOut(req, res)})
 
     const profileRouter= Router()
-    profileRouter.use(isAuthorized([role.DRIVER, role.CUSTOMER]))
+    profileRouter
     .get("/", async(req:Request,res:Response)=>{profileHandler.getProfile(req, res)})
+    .post("/changePassword", async(req:Request,res:Response)=>{profileHandler.changePassword(req, res)})
     .put("/edit", async(req:Request,res:Response)=>{profileHandler.editProfile(req, res)})
 
     const userRouter= Router()
-    userRouter.use(isAuthorized([role.ADMIN]))
+    userRouter
     .get("/", async(req:Request,res:Response)=>{userHandler.getAllUsers(req, res)})
     .get("/:userId", async(req:Request,res:Response)=>{userHandler.getUserById(req, res)})
     .get("/:email", async(req:Request,res:Response)=>{userHandler.getUserByEmail(req, res)})

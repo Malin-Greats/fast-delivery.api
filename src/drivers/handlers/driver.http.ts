@@ -1,8 +1,9 @@
 import {Request, Response} from "express"
 import { validationResult } from "express-validator";
 import { ERole  as role} from "../../auth/domain/role.model";
+import { ApiResponse } from "../../shared/dto/response";
 import AppError, { isError } from "../../shared/errors/error"
-import { DriverIn, DriverOut } from "../domain/dto/driver.dto";
+import { DriverIn } from "../domain/dto/driver.dto";
 import { IDriverService } from "../ports/driver-service.port"
 
 export class DriverHandler{
@@ -10,6 +11,7 @@ export class DriverHandler{
     constructor(private _driverService:IDriverService){}
 
     async signUp(req:Request, res:Response){
+        const apiResponse= new ApiResponse()
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -17,45 +19,94 @@ export class DriverHandler{
         let request=<DriverIn>req.body
         request.role =role.DRIVER
 
-        let result!:DriverOut;
         try {
-            result =await this._driverService.registerDriver(request)
+            apiResponse.data =await this._driverService.registerDriver(request)
+            apiResponse.success =true
         } catch (error) {
             if (isError(error)){
-               const err= new AppError(error.message,error.detail, 400)
-                return res.status(err.statusCode).json(err)
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                return res.status(apiResponse.errors.statusCode).json(apiResponse)
             }
             return res.status(500).json(error)
         }
-        return res.status(201).json(result)
+        return res.status(201).json(apiResponse)
     }
 
     async findDriverById(req:Request, res:Response){
+        const apiResponse = new ApiResponse()
         let driverId=<string>req.params.driverId
-        let response!:DriverOut
         try {
-            response= await  this._driverService.findDriverById(driverId)
+            apiResponse.data= await  this._driverService.findDriverById(driverId)
+            apiResponse.success =true
         } catch (error) {
             if (isError(error)){
-                const err= new AppError(error.message,error.detail, 400)
-                 return res.status(err.statusCode).json(err)
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
              }
              return res.status(500).json(error)
         }
-         return res.status(200).json(response)
+         return res.status(200).json(apiResponse)
     }
 
     async findAllDrivers(req:Request, res:Response){
-        let drivers!:DriverOut[]
+        const apiResponse = new ApiResponse()
         try {
-            drivers=await this._driverService.findAllDrivers("")
+            apiResponse.data=await this._driverService.findAllDrivers("")
+            apiResponse.success = true
         } catch (error) {
             if (isError(error)){
-                const err= new AppError(error.message,error.detail, 400)
-                 return res.status(err.statusCode).json(err)
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
              }
              return res.status(500).json(error)
         }
-         return res.status(201).json(drivers)
+         return res.status(200).json(apiResponse)
+    }
+
+    async approveDriver (req:Request, res:Response){
+        const apiResponse = new ApiResponse()
+        let driverId=<string>req.params.driverId
+        try {
+            apiResponse.data=await this._driverService.approveDriver(driverId)
+            apiResponse.success = true
+        } catch (error) {
+            if (isError(error)){
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
+             }
+             return res.status(500).json(error)
+        }
+         return res.status(201).json(apiResponse)
+    }
+    async rejectDriver (req:Request, res:Response){
+        const apiResponse = new ApiResponse()
+        let driverId=<string>req.params.driverId
+        try {
+            apiResponse.data=await this._driverService.rejectDriver(driverId)
+            apiResponse.success = true
+        } catch (error) {
+            if (isError(error)){
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
+             }
+             return res.status(500).json(error)
+        }
+         return res.status(201).json(apiResponse)
+    }
+
+    async getApprovalStatus (req:Request, res:Response){
+        const apiResponse = new ApiResponse()
+        let driverId=<string>req.params.driverId
+        try {
+            apiResponse.data=await this._driverService.approvalStatus(driverId)
+            apiResponse.success = true
+        } catch (error) {
+            if (isError(error)){
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
+             }
+             return res.status(500).json(error)
+        }
+         return res.status(200).json(apiResponse)
     }
 }
