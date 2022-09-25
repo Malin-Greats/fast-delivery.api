@@ -23,5 +23,5 @@ app.use(authRoutes())
 app.use(driverRoutes())
 
 app.listen(process.env.PORT||3000, ()=>{
-    logger.info(`Application listening on http://localhost:${process.env.PORT||3000}`)
+    logger.info(`Application listening on http://172.20.10.2:${process.env.PORT||3000}`)
 })
