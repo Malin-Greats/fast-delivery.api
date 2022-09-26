@@ -1,7 +1,6 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column} from "typeorm"
-import { RideStatus, RideType } from "../utils/enums/ride-type.enum"
-import { Location } from "../utils/types/location.type"
-import { RideIn, RideOut } from "./dto/ride.dto"
+import { RideStatus } from "../utils/enums/ride-status.enum"
+import { RideType } from "../utils/enums/ride-type.enum"
 
 @Entity("ride")
 export class  Ride extends BaseEntity{
@@ -15,16 +14,19 @@ export class  Ride extends BaseEntity{
     driver_id!:string
 
     @Column()
-    pickFrom!:Location
+    pick_from!:string
     
     @Column()
-    drop_to!:Location
+    drop_to!:string
 
     @Column()
-    start_time!:Date
+    accepted_at!:Date
 
-    @Column()
-    end_time!:Date
+    @Column({nullable:true})
+    start_time?:Date
+
+    @Column({nullable:true})
+    end_time?:Date
 
     @Column('decimal')
     ride_cost!:number
@@ -41,7 +43,7 @@ export class  Ride extends BaseEntity{
     })
     ride_type!:RideType
 
-    @Column()
+    @Column({default:false})
     is_payed_for!:boolean
 
     @Column({default:0})
@@ -49,12 +51,3 @@ export class  Ride extends BaseEntity{
 }
 
 
-export function NewRide(rideIn:RideIn):Ride{
-    const newRide = new Ride()
-    return newRide
-}
-
-export function toRideOut(ride:Ride):RideOut{
-    const rideOut:RideOut=ride
-    return rideOut
-}

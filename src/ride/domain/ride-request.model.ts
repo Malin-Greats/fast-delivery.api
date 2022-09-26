@@ -10,10 +10,10 @@ export class  RideRequest extends BaseEntity{
     customer_id!:string
 
     @Column()
-    pickFrom!:Location
+    pick_from!:string
     
     @Column()
-    drop_to!:Location
+    drop_to!:string
 
     @Column()
     request_time!:Date

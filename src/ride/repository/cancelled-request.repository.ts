@@ -2,7 +2,7 @@ import { EntityNotFoundError, Repository } from "typeorm";
 import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
 import { RideRequestCancelled } from "../domain/cancelled-ride-request.model";
-import { RideRequestCancelledIn } from "../domain/dto/cancelled-ride-request.dto";
+import { NewRideRequestCancelled, RideRequestCancelledIn } from "../domain/dto/cancelled-ride-request.dto";
 import { NewRideRequest } from "../domain/dto/ride-request.dto";
 import { IRideRequestCancelledRepository } from "../ports/cancelled-request-repository";
 
@@ -10,25 +10,25 @@ export class RideRequestCancelledRepository implements IRideRequestCancelledRepo
     constructor (private ormRepository:Repository<RideRequestCancelled>){}
 
     async create(requestIn: RideRequestCancelledIn): Promise<RideRequestCancelled> {
-        const newRideRequest = NewRideRequest(requestIn);
-        let savedRideRequest!:RideRequestCancelled
+        const newRideRequest = NewRideRequestCancelled(requestIn);
+        let cancelledRideRequest!:RideRequestCancelled
         try {
             const user = await this.ormRepository.create(newRideRequest);
-            savedRideRequest=await this.ormRepository.save(user)
+            cancelledRideRequest=await this.ormRepository.save(user)
         } catch (error ) {
             logger.error(error)
             throw error
         }
-        return savedRideRequest
+        return cancelledRideRequest
     }
 
     async update(id: string, requestIn: RideRequestCancelledIn): Promise<RideRequestCancelled> {
-        const rideRequest = await this.findById(id);
+        const cancelledRideRequest = await this.findById(id);
 
-        Object.assign(rideRequest, requestIn);
+        Object.assign(cancelledRideRequest, requestIn);
         let updatedRequest!:RideRequestCancelled
         try {
-            updatedRequest=await this.ormRepository.save(rideRequest);
+            updatedRequest=await this.ormRepository.save(cancelledRideRequest);
         } catch (error) {
             logger.error(error)
             throw error
@@ -37,9 +37,9 @@ export class RideRequestCancelledRepository implements IRideRequestCancelledRepo
     }
 
     async findById(id: string): Promise<RideRequestCancelled> {
-        let ride!:RideRequestCancelled;
+        let cancelledRideRequest!:RideRequestCancelled;
         try {
-            ride =  await this.ormRepository.findOneOrFail({ 
+            cancelledRideRequest =  await this.ormRepository.findOneOrFail({
                 where: { id }
             })
         } catch (error) {
@@ -50,19 +50,19 @@ export class RideRequestCancelledRepository implements IRideRequestCancelledRepo
                 throw error
             }
         }
-        return  ride
+        return  cancelledRideRequest
     }
     async findAll(filterBy: string): Promise<RideRequestCancelled[]> {
-        let rideRequests!:RideRequestCancelled[]
+        let cancelledRideRequests!:RideRequestCancelled[]
         try {
-            rideRequests =await this.ormRepository.find()
+            cancelledRideRequests =await this.ormRepository.find()
 
         } catch (error) {
             logger.error(error)
             throw  error
         }
-        return rideRequests
+        return cancelledRideRequests
     }
-    
+
 
 }
