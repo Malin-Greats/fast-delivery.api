@@ -1,4 +1,4 @@
-
+API DEFINATIONS
 login User /auth/login  POST
 request:
 {
