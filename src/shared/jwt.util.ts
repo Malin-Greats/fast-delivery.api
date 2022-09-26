@@ -8,7 +8,6 @@ export interface Payload{
     role:string
 }
 
-
 class JwtAuth{
     public static async generateToken(payload:Payload):Promise<IToken>{
         const expiresIn:number=60*60

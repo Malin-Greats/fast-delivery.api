@@ -1,8 +1,8 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from "typeorm"
 import { RideType } from "../utils/enums/ride-type.enum"
 
-@Entity("ride_request_cancelled")
-export class  RideRequestCancelled extends BaseEntity{
+@Entity("cancelled_ride")
+export class  CancelledRide extends BaseEntity{
     @PrimaryGeneratedColumn()
     id!: string
 

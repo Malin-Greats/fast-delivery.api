@@ -1,8 +1,8 @@
 import { EntityNotFoundError, Repository } from "typeorm";
 import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
-import { RideIn } from "../domain/dto/ride.dto";
-import { NewRide, Ride } from "../domain/ride.model";
+import { NewRide, RideIn } from "../domain/dto/ride.dto";
+import {  Ride } from "../domain/ride.model";
 import { IRideRepository } from "../ports/ride-repository.port";
 
 export class RideRepository implements IRideRepository{

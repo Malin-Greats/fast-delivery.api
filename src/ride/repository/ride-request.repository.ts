@@ -4,6 +4,7 @@ import logger from "../../shared/errors/logger";
 import { NewRideRequest, RideRequestIn } from "../domain/dto/ride-request.dto";
 import { RideRequest } from "../domain/ride-request.model";
 import { IRideRequestRepository } from "../ports/ride-request-repository";
+import { RideRequestStatus } from "../utils/enums/request-status.enum";
 
 export class RideRequestRepository implements IRideRequestRepository{
 
@@ -35,11 +36,20 @@ export class RideRequestRepository implements IRideRequestRepository{
         }
         return  updatedRequest
     }
+    async hasRequestWithStatus(customer_id:string, request_status:RideRequestStatus):Promise<boolean>{
+        const ride =  await this.ormRepository.findOneOrFail({
+            where: { customer_id,request_status },} )
+        if (!ride){
+            return false
+        }
+        return  true
+    }
+
 
     async findById(id: string): Promise<RideRequest> {
         let ride!:RideRequest;
         try {
-            ride =  await this.ormRepository.findOneOrFail({ 
+            ride =  await this.ormRepository.findOneOrFail({
                 where: { id }
             })
         } catch (error) {
