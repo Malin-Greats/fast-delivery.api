@@ -18,7 +18,9 @@ const app = express()
 app.use(helmet());
 app.use(express.json())
 app.use(morgan('dev'))
-
+app.get("",(req:Request, res:Response)=>{
+    return res.status(200).send("Welcome to Fast Delivery RESTful API.!")
+} )
 app.use(authRoutes())
 app.use(driverRoutes())
 
