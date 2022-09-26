@@ -27,7 +27,6 @@ response:
         }
     }
 }
-
 Get User Profile /profile GET
 request:  /profile
 response: {
