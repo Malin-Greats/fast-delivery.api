@@ -1,8 +1,10 @@
-import { RideStatus  as status } from "../../utils/enums/ride-status.enum"
+import { RideStatus, RideStatus  as status } from "../../utils/enums/ride-status.enum"
 import { RideType, RideType as type } from "../../utils/enums/ride-type.enum"
 import { RideRequest } from "../ride-request.model"
 import { Ride } from "../ride.model"
-
+export interface IRideStatus{
+    ride_request:RideStatus
+} 
 export interface RideIn{
     customer_id:string
     driver_id:string

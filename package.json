@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"nodemon src/index.ts ",
     "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./src/data-source.ts"
   },
   "keywords": [],

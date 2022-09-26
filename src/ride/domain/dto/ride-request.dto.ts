@@ -1,5 +1,6 @@
 import { RideRequest } from "../ride-request.model"
 import { RideType } from "../../utils/enums/ride-type.enum"
+import { RideRequestStatus } from "../../utils/enums/request-status.enum"
 export interface RideRequestIn{
     customer_id:string
     pick_from:string
@@ -7,6 +8,10 @@ export interface RideRequestIn{
     request_time:Date
     est_cost:number
     ride_type:RideType
+    request_status:RideRequestStatus
+}
+export interface IRideRequestStatus{
+    request_status:RideRequestStatus
 }
 export interface RideRequestOut{
     
