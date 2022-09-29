@@ -41,30 +41,31 @@ export function driverRoutes():Router{
     signUpRouter
     .post("/driver", v.driver.signUp,async(req:Request,res:Response)=>{driverHandler.signUp(req, res)})
 
-    driverRouter
-    .post("/", v.driver.signUp,async(req:Request,res:Response)=>{driverHandler.signUp(req, res)})
+    driverRouter.use(isAuthorized([role.ADMIN, role.DRIVER]))
     .get("/", async(req:Request,res:Response)=>{driverHandler.findAllDrivers(req, res)})
     .get("/:driverId", async(req:Request,res:Response)=>{driverHandler.findDriverById(req, res)})
-    .post("/:driverId/approve", async(req:Request,res:Response)=>{driverHandler.approveDriver(req, res)})
-    .post("/:driverId/reject",  async(req:Request,res:Response)=>{driverHandler.rejectDriver(req, res)})
+    .put("/approve", async(req:Request,res:Response)=>{driverHandler.approveDriver(req, res)})
+    .put("/reject",  async(req:Request,res:Response)=>{driverHandler.rejectDriver(req, res)})
     .get("/:driverId/approval-status",  async(req:Request,res:Response)=>{driverHandler.getApprovalStatus(req, res)})
 
     driverRouter
-    .post("/:driverId/vehicles", v.vehicle.create, isDriverExists,
-        async(req:Request,res:Response)=>{vehicleHandler.addDriverVehicle(req, res)})
-    .get("/:driverId/vehicles", isDriverExists,
-        async(req:Request,res:Response)=>{vehicleHandler.findDriverVehicles(req, res)})
+    .post("/:driverId/vehicles", v.vehicle.create, isDriverExists,async(req:Request,res:Response)=>{vehicleHandler.addVehicle(req, res)})
+    .get("/:driverId/vehicles", isDriverExists,async(req:Request,res:Response)=>{vehicleHandler.findDriverVehicles(req, res)})
+    .get("/:driverId/vehicles/:vehicleId", isDriverExists,async(req:Request,res:Response)=>{vehicleHandler.findVehicleById(req, res)})
+    .put("/:driverId/vehicles/:vehicleId", isDriverExists,async(req:Request,res:Response)=>{vehicleHandler.updateVehicle(req, res)})
+    .delete("/:driverId/vehicles/:vehicleId", isDriverExists,async(req:Request,res:Response)=>{vehicleHandler.deleteVehicle(req, res)})
 
     driverRouter
-    .post("/:driverId/documents",v.documents.create,isDriverExists,
-         async(req:Request,res:Response)=>{driverDocsHandler.addDriverDocuments(req, res)})
-    .get("/:driverId/documents", isDriverExists,
-        async(req:Request,res:Response)=>{driverDocsHandler.findDriverDocuments(req, res)})
+    .post("/:driverId/documents",v.documents.create,isDriverExists,async(req:Request,res:Response)=>{driverDocsHandler.addDriverDocuments(req, res)})
+    .get("/:driverId/documents", isDriverExists,async(req:Request,res:Response)=>{driverDocsHandler.findDriverDocuments(req, res)})
+    .put("/:driverId/documents/:documentsId", isDriverExists,async(req:Request,res:Response)=>{driverDocsHandler.updateDocuments(req, res)})
+    .delete("/:driverId/documents/:documentsId", isDriverExists,async(req:Request,res:Response)=>{driverDocsHandler.deleteDocuments(req, res)})
 
 
     const routes=Router()
     routes.use("/drivers",driverRouter)
     routes.use("/sign-up",signUpRouter)
+
 
     return routes
 }

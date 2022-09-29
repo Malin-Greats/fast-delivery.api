@@ -16,7 +16,7 @@ export class RoleHandler{
         let request=<RoleIn>req.body
         try {
             apiResponse.data=await this._roleService.createRole(request)
-            apiResponse.success
+            apiResponse.success = true
         } catch (error) {
             if (isError(error)){
                 apiResponse.errors =new AppError(error.message,error.detail, 400)
@@ -49,6 +49,7 @@ export class RoleHandler{
         let roleName:string=req.params.roleName
          try {
             apiResponse.data=await this._roleService.findRoleByName(roleName)
+            apiResponse.success =true
          } catch (error) {
             if (isError(error)){
                 apiResponse.errors= new AppError(error.message,error.detail, 400)
@@ -89,6 +90,22 @@ export class RoleHandler{
              return res.status(500).json(error)
          }
          return res.status(201).json(apiResponse)
+    }
+
+    async deleteRole(req:Request, res:Response){
+        const apiResponse = new ApiResponse()
+        let roleId=req.params.roleId
+         try {
+            apiResponse.data=await this._roleService.deleteRole(roleId)
+            apiResponse.success=true
+         } catch (error) {
+            if (isError(error)){
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
+             }
+             return res.status(500).json(error)
+         }
+         return res.status(204).json(apiResponse)
     }
 
 }

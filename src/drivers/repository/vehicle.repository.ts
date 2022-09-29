@@ -25,19 +25,26 @@ export class VehicleRepository implements IVehicleRepository{
     }
 
     async delete(id: string): Promise<Vehicle> {
-        throw new Error("Method not implemented.");
+        const vehicle = await this.findById(id);
+        let removed!:Vehicle;
+        try {
+            removed=await this.ormRepository.remove(vehicle);
+        } catch (error) {
+            logger.error(error)
+            throw error
+        }
+        return removed;
     }
 
     async findById(id: string): Promise<Vehicle> {
         let vehicle!:Vehicle;
         try {
             vehicle =  await this.ormRepository.findOneOrFail({
-                where: { id },
-                relations: {driver: true,}
+                where: { id }
             })
         } catch (error) {
             if (error instanceof EntityNotFoundError){
-                throw new AppError(`The user with id: ${id} does not exist!`);
+                throw new AppError(`The vehicle with id: ${id} does not exist!`);
             }else{
                 logger.error(error)
                 throw error
@@ -67,7 +74,16 @@ export class VehicleRepository implements IVehicleRepository{
     }
 
     async update(id: string, vehicleIn: VehicleIn): Promise<Vehicle> {
-        throw new Error("Method not implemented.");
+        const vehicle = await this.findById(id);
+        Object.assign(vehicle, vehicleIn);
+        let updated!:Vehicle
+        try {
+            updated=await this.ormRepository.save(vehicle);
+        } catch (error) {
+            logger.error(error)
+            throw error
+        }
+        return  updated
     }
 
     async findAll(): Promise<Vehicle[]> {

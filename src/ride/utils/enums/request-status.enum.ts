@@ -5,3 +5,7 @@ export enum RideRequestStatus{
     FAILED="failed",
     CANCELLED="cancelled"
 }
+
+export interface IRideRequestStatus{
+    request_status:RideRequestStatus
+}

@@ -3,9 +3,10 @@ import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
 import { CancelledRide } from "../domain/cancelled-ride-request.model";
 import { CancelledRideIn, NewCancelledRide } from "../domain/dto/cancelled-ride-request.dto";
-import { ICancelledRideRepository } from "../ports/cancelled-ride-repository";
+import { ICancelledRideRepository } from "../ports/cancelled-ride/cancelled-ride-repository";
 
-export class RideRequestCancelledRepository implements ICancelledRideRepository{
+
+export class CancelledRideRepository implements ICancelledRideRepository{
     constructor (private ormRepository:Repository<CancelledRide>){}
 
     async create(requestIn: CancelledRideIn): Promise<CancelledRide> {
@@ -51,6 +52,7 @@ export class RideRequestCancelledRepository implements ICancelledRideRepository{
         }
         return  cancelledRideRequest
     }
+
     async findAll(filterBy: string): Promise<CancelledRide[]> {
         let cancelledRideRequests!:CancelledRide[]
         try {

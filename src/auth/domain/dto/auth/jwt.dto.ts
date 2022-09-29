@@ -3,6 +3,6 @@ export interface IJWTPayload {
     role:string
 }
 export interface IToken{
-    token:string;
-    expiresIn:number
+    access_token:string;
+    expires_in:number
 }

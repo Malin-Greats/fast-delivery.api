@@ -21,7 +21,7 @@ export class AuthService implements IAuthService{
         return toUserOut(user, user.role.name)
     }
     async login(loginIn: LoginIn): Promise<LoginOut> {
-        const user = await this._userRepository.findByEmail(loginIn.email)
+        const user = await this._userRepository.findByContact(loginIn.contact)
         await this.verifyPassword(loginIn.password,user.password)
         const payload =<IJWTPayload>{userId:user.id, role:user.role.name}
         const token = await jwt.generateToken(payload)

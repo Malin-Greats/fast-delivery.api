@@ -1,20 +1,21 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from "typeorm"
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm"
+import { Place } from "../../shared/dto/location.dto"
+import { TravelInfo } from "../../shared/dto/travel-info.dto"
 import { RideRequestStatus } from "../utils/enums/request-status.enum"
-import { RideType } from "../utils/enums/ride-type.enum"
 
 @Entity("ride_request")
 export class  RideRequest extends BaseEntity{
     @PrimaryGeneratedColumn()
     id!: string
-    
+
     @Column()
     customer_id!:string
 
-    @Column()
-    pick_from!:string
-    
-    @Column()
-    drop_to!:string
+    @Column('json')
+    pick_from!:Place
+
+    @Column('json')
+    drop_to!:Place
 
     @Column({
         type:"enum",
@@ -23,15 +24,23 @@ export class  RideRequest extends BaseEntity{
     request_status!:RideRequestStatus
 
     @Column()
-    request_time!:Date
+    travel_time!:string
 
     @Column('decimal')
-    est_cost!:number
+    cost!:number
 
-    @Column({
-        type:"enum",
-        enum:RideType
-    })
-    ride_type!:RideType
+    @Column()
+    payment_id!:string
+
+    @Column()
+    ride_type_id!:string
+
+    @Column()
+    is_paid_for!:boolean
+    @Column('json')
+    travel_information!:TravelInfo
+
+    @CreateDateColumn()
+    created_at!:Date
 }
 

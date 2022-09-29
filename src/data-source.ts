@@ -7,6 +7,10 @@ import logger from "./shared/errors/logger";
 import { Vehicle } from "./drivers/domain/vehicles.model";
 import { Driver } from "./drivers/domain/driver.model";
 import { DriverDocuments } from "./drivers/domain/driver-docs.model";
+import { CancelledRide } from "./ride/domain/cancelled-ride-request.model";
+import { RideRequest } from "./ride/domain/ride-request.model";
+import { Ride } from "./ride/domain/ride.model";
+import { RideType } from "./ride/domain/ride-type.model";
 
 @singleton()
 export class psqlDB{
@@ -22,7 +26,7 @@ export class psqlDB{
                 database: "fastd",
                 synchronize: true,
                 logging: false,
-                entities: [User, Role, UserOTP, Vehicle, Driver,DriverDocuments],
+                entities: [User, Role, UserOTP, Vehicle, Driver,DriverDocuments,Ride, CancelledRide, RideRequest, RideType],
             })
             psqlDB.DataSrc.initialize()
                 .then(() => {
@@ -34,6 +38,4 @@ export class psqlDB{
             throw new Error('failed to initialized pool');
         }
     }
-
-    
 }

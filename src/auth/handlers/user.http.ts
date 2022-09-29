@@ -7,6 +7,22 @@ export class UserHandler{
     constructor(private _userService:IUserService){}
 
     
+    async createUser(req:Request, res:Response){
+        const apiResponse= new ApiResponse()
+        let userIn=<UserIn>req.body
+        try {
+            apiResponse.data= await  this._userService.createUser(userIn)
+            apiResponse.success=true
+        } catch (error) {
+            if (isError(error)){
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
+             }
+             return res.status(500).json(error)
+        }
+         return res.status(201).json(apiResponse)
+    }
+
     async getUserById(req:Request, res:Response){
         const apiResponse= new ApiResponse()
         let userId=<string>req.params.userId
@@ -22,40 +38,6 @@ export class UserHandler{
         }
          return res.status(200).json(apiResponse)
     }
-
-    async getUserByEmail(req:Request, res:Response){
-        const apiResponse = new ApiResponse()
-        let email=<string>req.params.userId
-        try {
-            apiResponse.data= await  this._userService.findUserByEmail(email)
-            apiResponse.success=true
-        } catch (error) {
-            if (isError(error)){
-                apiResponse.errors= new AppError(error.message,error.detail, 400)
-                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
-             }
-             return res.status(500).json(error)
-        }
-         return res.status(200).json(apiResponse)
-    }
-
-    async getUserByContact(req:Request, res:Response){
-        const apiResponse = new ApiResponse()
-        let contact=<string>req.params.userId
-        try {
-            apiResponse.data= await  this._userService.findUserByContact(contact)
-            apiResponse.success=true
-        } catch (error) {
-            if (isError(error)){
-                apiResponse.errors= new AppError(error.message,error.detail, 400)
-                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
-             }
-             return res.status(500).json(error)
-        }
-         return res.status(200).json(apiResponse)
-    }
-
-
 
     async getAllUsers(eq:Request, res:Response){
         const apiResponse = new ApiResponse()

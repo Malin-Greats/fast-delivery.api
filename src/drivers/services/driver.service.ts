@@ -2,10 +2,10 @@ import { UserIn } from "../../auth/domain/dto/user/user.dto";
 import { IRoleRepository } from "../../auth/ports/role-repository.port";
 import { IUserRepository } from "../../auth/ports/user-repository.port";
 import logger from "../../shared/errors/logger";
-import { DriverApprovalStatus } from "../domain/driver.model";
 import { DriverIn, DriverOut, IDriverApprovalStatus, toDriverOut } from "../domain/dto/driver.dto";
 import { IDriverRepository } from "../ports/driver-repository.port";
 import { IDriverService } from "../ports/driver-service.port";
+import { DriverApprovalStatus } from "../utilts/enums/driver-approval-status.enum";
 
 export class DriverService implements IDriverService{
 
@@ -37,7 +37,6 @@ export class DriverService implements IDriverService{
         return driversOut
     }
 
-    
     async approveDriver(driverId: string): Promise<DriverApprovalStatus> {
         const aprovalStatus = {approval_status:DriverApprovalStatus.APPROVED}
         const driver = await this._driverRepository.update(driverId, aprovalStatus)
