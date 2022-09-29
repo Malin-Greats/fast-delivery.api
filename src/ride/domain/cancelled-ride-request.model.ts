@@ -1,5 +1,5 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from "typeorm"
-import { RideType } from "../utils/enums/ride-type.enum"
+import { Ride } from "./ride.model"
 
 @Entity("cancelled_ride")
 export class  CancelledRide extends BaseEntity{
@@ -7,18 +7,21 @@ export class  CancelledRide extends BaseEntity{
     id!: string
 
     @Column()
-    request_id!:string
+    ride_id!:string
 
     @Column()
     cancelled_by!:string
 
     @Column()
-    cancelled_time!:string
+    cancelled_time!:Date
 
     @Column('decimal')
     penalt_fee!:number
 
     @Column('text')
     reason!:string
+
+    @OneToOne(type => Ride,{eager:true}) @JoinColumn({name:"ride_id"})
+    ride!:Ride
 }
 

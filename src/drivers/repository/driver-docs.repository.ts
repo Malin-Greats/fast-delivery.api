@@ -18,17 +18,21 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
        try {
         savedDocumemts=await this.ormRepository.save(documents)
        } catch (error ) {
-            if (error instanceof EntityNotFoundError){
-                this.update(documentsIn.driver_id, documentsIn)
-            }else{
-                throw error
-            }
+            throw error
        }
        return savedDocumemts
     }
 
-    async delete(driverId: string): Promise<DriverDocuments> {
-        throw new Error("Method not implemented.");
+    async delete(id: string): Promise<DriverDocuments> {
+        const documents = await this.findById(id);
+        let removed!:DriverDocuments;
+        try {
+            removed=await this.ormRepository.remove(documents);
+        } catch (error) {
+            logger.error(error)
+            throw error
+        }
+        return removed;
     }
 
 
@@ -47,9 +51,24 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
         }
         return  documents
     }
-    async update(driverId: string, documentsIn: DriverDocumentsIn): Promise<DriverDocuments> {
-            const documents = await this.findByDriverId(driverId);
-    
+
+    async findById(id: string): Promise<DriverDocuments> {
+        let documents!:DriverDocuments;
+        try {
+            documents =  await this.ormRepository.findOneOrFail({ 
+                where: { id }})
+        } catch (error) {
+            if (error instanceof EntityNotFoundError){
+                throw new AppError(`The documents with id: ${id} does not exist!`);
+            }else{
+                logger.error(error)
+                throw error
+            }
+        }
+        return  documents
+    }
+    async update(id: string, documentsIn: DriverDocumentsIn): Promise<DriverDocuments> {
+            const documents = await this.findById(id);
             Object.assign(documents, documentsIn);
             let updateDocuments!:DriverDocuments
             try {
@@ -59,7 +78,6 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
                 throw error
             }
             return  updateDocuments
-        
     }
 
     async findAll(): Promise<DriverDocuments[]> {

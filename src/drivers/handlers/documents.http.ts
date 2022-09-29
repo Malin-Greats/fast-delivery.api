@@ -12,10 +12,57 @@ export class DriverDocumentsHandler {
         let driverId=<string>req.params.driverId
         const documentsIn = <DriverDocumentsIn> req.body
         documentsIn.driver_id=driverId
-        documentsIn.personalID=req.body.personal_id
-
         try {
-            apiResponse.data= await  this._documentsService.addDriverDocuments(documentsIn )
+            apiResponse.data= await  this._documentsService.addDocuments(documentsIn )
+            apiResponse.success=true
+        } catch (error) {
+            if (isError(error)){
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
+             }
+             return res.status(500).json(error)
+        }
+         return res.status(200).json(apiResponse)
+    }
+
+    async findDriverDocuments(req:Request, res:Response){
+        const apiResponse = new ApiResponse()
+        let driverId=<string>req.params.driverId
+        try {
+            apiResponse.data= await  this._documentsService.findDocumentsByDriverId(driverId)
+            apiResponse.success=true
+        } catch (error) {
+            if (isError(error)){
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
+             }
+             return res.status(500).json(error)
+        }
+         return res.status(200).json(apiResponse)
+    }
+
+    async deleteDocuments(req:Request, res:Response){
+        const apiResponse = new ApiResponse()
+        let id=<string>req.params.documentsId
+        try {
+            apiResponse.data= await  this._documentsService.deleteDocuments(id)
+            apiResponse.success=true
+        } catch (error) {
+            if (isError(error)){
+                apiResponse.errors= new AppError(error.message,error.detail, 400)
+                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
+             }
+             return res.status(500).json(error)
+        }
+         return res.status(200).json(apiResponse)
+    }
+
+    async updateDocuments(req:Request, res:Response){
+        const apiResponse = new ApiResponse()
+        let id=<string>req.params.documentsId
+        const documentsIn = <DriverDocumentsIn> req.body
+        try {
+            apiResponse.data= await  this._documentsService.updateDocuments(id,documentsIn )
             apiResponse.success=true
         } catch (error) {
             if (isError(error)){
@@ -29,11 +76,10 @@ export class DriverDocumentsHandler {
 
    
 
-    async findDriverDocuments(req:Request, res:Response){
+    async findAllDocuments(req:Request, res:Response){
         const apiResponse = new ApiResponse()
-        let driverId=<string>req.params.driverId
         try {
-            apiResponse.data= await  this._documentsService.findAllDriverDocuments(driverId)
+            apiResponse.data= await  this._documentsService.findAllDocuments()
             apiResponse.success=true
         } catch (error) {
             if (isError(error)){

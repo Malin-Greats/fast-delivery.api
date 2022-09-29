@@ -2,35 +2,43 @@ import { DriverDocuments } from "../driver-docs.model"
 
 export interface DriverDocumentsIn{
     driver_id:string
-    personalID:string
+    national_id:string
     drivers_license:string
-    background_check:string
-    profile_photo:string
+    defensive_drivers_license:string
+    police_clearance:string
+    vehicle_technical_certificate:string
+    vehicle_insurance_registration:string
 }
 
 export interface DriverDocumentsOut{
-    personalID:string
+    national_id:string
     drivers_license:string
-    background_check:string
-    profile_photo:string
+    defensive_drivers_license:string
+    police_clearance:string
+    vehicle_technical_certificate:string
+    vehicle_insurance_registration:string
 }
 
-export function NewDriverDocuments({driver_id, personalID, drivers_license, background_check, profile_photo}:DriverDocumentsIn):DriverDocuments{
+export function NewDriverDocuments({driver_id, national_id, drivers_license, defensive_drivers_license,vehicle_technical_certificate,police_clearance ,vehicle_insurance_registration}:DriverDocumentsIn):DriverDocuments{
     const documents = new DriverDocuments()
     documents.driver_id=driver_id
+    documents.national_id=national_id
     documents.drivers_license=drivers_license
-    documents.profile_photo=profile_photo
-    documents.personalID=personalID
-    documents.background_check=background_check
+    documents.defensive_drivers_license = defensive_drivers_license
+    documents.vehicle_technical_certificate = vehicle_technical_certificate
+    documents.vehicle_insurance_registration = vehicle_insurance_registration
+    documents.police_clearance=police_clearance
     return documents
 }
 
-export function toDriverDocumentsOut({ personalID, drivers_license, background_check, profile_photo}:DriverDocuments):DriverDocumentsOut{
+export function toDriverDocumentsOut({national_id, drivers_license, defensive_drivers_license,vehicle_technical_certificate ,vehicle_insurance_registration, police_clearance}:DriverDocuments):DriverDocumentsOut{
     const  documentsOut:DriverDocumentsOut ={
-        personalID,
+        national_id,
         drivers_license,
-        background_check,
-        profile_photo
+        defensive_drivers_license,
+        vehicle_technical_certificate,
+        vehicle_insurance_registration,
+        police_clearance
     }
     return   documentsOut
 }

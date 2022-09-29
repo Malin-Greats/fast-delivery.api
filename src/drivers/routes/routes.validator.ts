@@ -22,17 +22,17 @@ export const driverRouteValidator={
             body("year").not().isEmpty().withMessage("year is required"),
             body("color").not().isEmpty().withMessage("color is required"),
             body("model").not().isEmpty().withMessage("model is required"),
-            body("capacity").not().isEmpty().withMessage("capacity is required"),
-            body("vehicle_technical_certificate").not().isEmpty().withMessage("vehicle_technical_certificate is required"),
-            body("vehicle_insurance_registration").not().isEmpty().withMessage("vehicle_insurance_registration is required"),
         ]
     },
     documents:{
         create:[
-            body("personal_id").not().isEmpty().withMessage("personal_id is required"),
-            body("drivers_license").not().isEmpty().withMessage("drivers_license is required"),
+            body("national_id").not().isEmpty().withMessage("national_id is required"),
             body("profile_photo").not().isEmpty().withMessage("profile_photo is required"),
-            body("background_check").not().isEmpty().withMessage("background_check is required"),
+            body("drivers_license").not().isEmpty().withMessage("drivers_license is required"),
+            body("police_clearance").not().isEmpty().withMessage("police_clearance is required"),
+            body("defensive_drivers_license").not().isEmpty().withMessage("defensive_drivers_license is required"),
+            body("vehicle_technical_certificate").not().isEmpty().withMessage("vehicle_technical_certificate is required"),
+            body("vehicle_insurance_registration").not().isEmpty().withMessage("vehicle_insurance_registration is required"),
         ]
     }
 }

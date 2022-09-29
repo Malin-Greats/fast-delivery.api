@@ -80,7 +80,15 @@ export class RoleRepository implements IRoleRepository{
     }
 
     async delete(roleId: string): Promise<Role> {
-        throw new Error("Method not implemented.");
+        const role = await this.findById(roleId);
+        let removedRole!:Role;
+        try {
+            removedRole=await this.ormRepository.remove(role);
+        } catch (error) {
+            logger.error(error)
+            throw error
+        }
+        return removedRole;
     }
 
 }

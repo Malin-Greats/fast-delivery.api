@@ -17,7 +17,7 @@ export const routeValidate={
         ],
         login:[
            
-                body("email").isEmail().withMessage("Invalid email address"),
+                body("contact").not().isEmpty().withMessage("Invalid contact number"),
                 body("password").not().isEmpty().isLength({min:8, max: 32 }).withMessage("Password is required")
 
         ],

@@ -1,20 +1,45 @@
 import { EntityNotFoundError, Repository } from "typeorm";
+import { IObject } from "../../shared/dto/filter-by.dto";
 import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
 import { NewRide, RideIn } from "../domain/dto/ride.dto";
 import {  Ride } from "../domain/ride.model";
-import { IRideRepository } from "../ports/ride-repository.port";
+import { IRideRepository } from "../ports/ride/ride-repository.port";
 
 export class RideRepository implements IRideRepository{
 
     constructor(private ormRepository:Repository<Ride>){}
+    
+    async findOneBy(filter: IObject): Promise<Ride> {
+        let ride;
+        try {
+            ride =await this.ormRepository.findOneOrFail({
+                where: { ...filter.by },} )
+        } catch (error ) {
+            logger.error(error)
+            throw error
+        }
+        return ride
+    }
 
-    async create(requestIn: RideIn): Promise<Ride> {
-        const newRide = NewRide(requestIn);
+    async findAllBy(filter: IObject): Promise<Ride[]> {
+        let rides;
+        try {
+            rides =await this.ormRepository.find({
+                where: { ...filter.by },} )
+        } catch (error ) {
+            logger.error(error)
+            throw error
+        }
+        return rides
+    }
+
+    async create(rideIn: RideIn): Promise<Ride> {
+        const newRide = NewRide(rideIn);
         let savedRide!:Ride
         try {
-            const user = await this.ormRepository.create(newRide);
-            savedRide=await this.ormRepository.save(user)
+            const ride = await this.ormRepository.create(newRide);
+            savedRide=await this.ormRepository.save(ride)
         } catch (error ) {
             logger.error(error)
             throw error
@@ -22,10 +47,10 @@ export class RideRepository implements IRideRepository{
         return savedRide
     }
 
-    async update(id: string, requestIn: Ride): Promise<Ride> {
+    async update(id: string, requestIn: IObject): Promise<Ride> {
          const ride = await this.findById(id);
 
-        Object.assign(ride, requestIn);
+        Object.assign(ride, requestIn.by);
         let updatedRide!:Ride
         try {
             updatedRide=await this.ormRepository.save(ride);
@@ -39,7 +64,7 @@ export class RideRepository implements IRideRepository{
     async findById(id: string): Promise<Ride> {
         let ride!:Ride;
         try {
-            ride =  await this.ormRepository.findOneOrFail({ 
+            ride =  await this.ormRepository.findOneOrFail({
                 where: { id }
             })
         } catch (error) {
@@ -51,17 +76,5 @@ export class RideRepository implements IRideRepository{
             }
         }
         return  ride
-    }
-    
-    async findAll(filterBy: string): Promise<Ride[]> {
-        let rides!:Ride[]
-        try {
-            rides =await this.ormRepository.find()
-
-        } catch (error) {
-            logger.error(error)
-            throw  error
-        }
-        return rides
     }
 }

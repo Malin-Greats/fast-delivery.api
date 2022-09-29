@@ -1,5 +1,4 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { UserIn } from "./dto/user/user.dto";
 import { Role } from "./role.model";
 
 

@@ -10,16 +10,16 @@ export interface Payload{
 
 class JwtAuth{
     public static async generateToken(payload:Payload):Promise<IToken>{
-        const expiresIn:number=60*60
-        let token!:string
+        const expires_in:number=60*60
+        let access_token!:string
         try {
             const SECRET=process.env.JWT_SECRET_KEY as string
-            token= sign(payload,SECRET ,  { expiresIn})
+            access_token= sign(payload,SECRET ,  { expiresIn:expires_in})
         } catch (error) {
             throw new AppError("Unauthorized Access. Please login!")
         }
 
-        return {token, expiresIn}
+        return {access_token, expires_in}
     }
 
     public static async verifyToken(token:string){

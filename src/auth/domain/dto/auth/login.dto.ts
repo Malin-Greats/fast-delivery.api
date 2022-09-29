@@ -1,8 +1,8 @@
-import { UserOut } from "../user/get-user.dto"
+import { UserOut } from "../user/user.dto"
 import { IToken } from "./jwt.dto"
 
 export interface LoginIn{
-    email:string
+    contact:string
     password:string
 }
 

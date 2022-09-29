@@ -1,5 +1,6 @@
-import { CancelledRide } from "../domain/cancelled-ride-request.model"
-import { CancelledRideIn } from "../domain/dto/cancelled-ride-request.dto"
+import { CancelledRide } from "../../domain/cancelled-ride-request.model"
+import { CancelledRideIn } from "../../domain/dto/cancelled-ride-request.dto"
+
 
 export interface ICancelledRideRepository{
     create(requestIn:CancelledRideIn):Promise<CancelledRide>

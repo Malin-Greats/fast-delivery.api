@@ -12,7 +12,7 @@ import { AuthService } from "../services/auth.service"
 import { ProfileService } from "../services/profile.service"
 import { RoleService } from "../services/role.service"
 import { UserService } from "../services/user.service"
-import { routeValidate } from "./route-validators"
+import { routeValidate  as v} from "./route-validators"
 import { ERole as role } from "../domain/role.model"
 import { isAuthorized } from "../../shared/middleware/isAuthorized"
 
@@ -30,35 +30,40 @@ export function authRoutes():Router{
     const authHandler = new AuthHandler(authService)
     const profileHandler = new ProfileHandler(profileService)
 
-    const roleRouter= Router()
-    roleRouter.use(isAuthorized([role.ADMIN]))
-    .post("/", routeValidate.role.create,async(req:Request,res:Response)=>{roleHandler.createRole(req, res)})
-    .get("/", async(req:Request,res:Response)=>{roleHandler.findAllRoles(req, res)})
-    .get("/:roleId", async(req:Request,res:Response)=>{roleHandler.findRoleById(req, res)})
-    .get("/:roleName", async(req:Request,res:Response)=>{roleHandler.findRoleByName(req, res)})
-    .put("/:roleId", async(req:Request,res:Response)=>{roleHandler.updateRole(req, res)})
-    
     const authRouter= Router()
     authRouter
-    .post("/sign-up",routeValidate.auth.signUp, async(req:Request,res:Response)=>{authHandler.signUp(req, res)})
-    .post("/login",routeValidate.auth.login, async(req:Request,res:Response)=>{authHandler.login(req, res)})
-    .post("/logout", async(req:Request,res:Response)=>{authHandler.loggingOut(req, res)})
+    .post("/login",v.auth.login, async(req:Request,res:Response)=>{authHandler.login(req, res)})
+    .post("/sign-up",v.auth.signUp, async(req:Request,res:Response)=>{authHandler.signUp(req, res)})
+    .post("/sign-up/admin", v.auth.signUp,async(req:Request,res:Response)=>{authHandler.signUpAdmin(req, res)})
 
     const profileRouter= Router()
-    profileRouter
+    profileRouter.use(isAuthorized([role.ADMIN, role.CUSTOMER, role.DRIVER]))
     .get("/", async(req:Request,res:Response)=>{profileHandler.getProfile(req, res)})
     .post("/changePassword", async(req:Request,res:Response)=>{profileHandler.changePassword(req, res)})
     .put("/edit", async(req:Request,res:Response)=>{profileHandler.editProfile(req, res)})
 
+   
+
+    //ADMIN ROUTES 
     const userRouter= Router()
-    userRouter
+    userRouter.use(isAuthorized([role.ADMIN]))
+    .post("/",  async(req:Request,res:Response)=>{userHandler.createUser(req, res)})
     .get("/", async(req:Request,res:Response)=>{userHandler.getAllUsers(req, res)})
     .get("/:userId", async(req:Request,res:Response)=>{userHandler.getUserById(req, res)})
-    .get("/:email", async(req:Request,res:Response)=>{userHandler.getUserByEmail(req, res)})
-    .get("/:contact", async(req:Request,res:Response)=>{userHandler.getUserByContact(req, res)})
-    
+    .put("/:userId",  async(req:Request,res:Response)=>{userHandler.updateUser(req, res)})
+    .delete("/:userId",  async(req:Request,res:Response)=>{userHandler.deleteUser(req, res)})
+
+
+    const roleRouter= Router()
+    roleRouter.use(isAuthorized([role.ADMIN]))
+    .post("/", v.role.create,async(req:Request,res:Response)=>{roleHandler.createRole(req, res)})
+    .get("/", async(req:Request,res:Response)=>{roleHandler.findAllRoles(req, res)})
+    .get("/:roleId", async(req:Request,res:Response)=>{roleHandler.findRoleById(req, res)})
+    .put("/:roleId", async(req:Request,res:Response)=>{roleHandler.updateRole(req, res)})
+    .delete("/:roleId", async(req:Request,res:Response)=>{roleHandler.deleteRole(req, res)})
+
     const routes = Router()
-    routes.use("/auth", authRouter)
+    routes.use("/", authRouter)
     routes.use("/users", userRouter)
     routes.use("/roles", roleRouter)
     routes.use("/profile", profileRouter)
