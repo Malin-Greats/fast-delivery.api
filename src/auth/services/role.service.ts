@@ -33,7 +33,8 @@ export class RoleService implements IRoleService{
         return  toRoleOut(role)
     }
     async deleteRole(roleId: string): Promise<RoleOut> {
-        throw new Error("Method not implemented.");
+        const role = await this._roleRepository.delete(roleId)
+        return role
     }
     
 }

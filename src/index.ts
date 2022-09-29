@@ -9,6 +9,7 @@ import { RoleRepository } from "./auth/repository/role.repository";
 import { Role } from "./auth/domain/role.model";
 import { authRoutes } from "./auth/routes/routes";
 import { driverRoutes } from "./drivers/routes/routes";
+import { rideRoutes } from "./ride/routes/routes";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.get("",(req:Request, res:Response)=>{
 } )
 app.use(authRoutes())
 app.use(driverRoutes())
+app.use(rideRoutes())
 
 app.listen(process.env.PORT||3000, ()=>{
     logger.info(`Application listening on http://172.20.10.2:${process.env.PORT||3000}`)

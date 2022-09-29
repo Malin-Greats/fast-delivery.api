@@ -1,34 +1,45 @@
+import { Place } from "../../../shared/dto/location.dto"
 import { RideStatus, RideStatus  as status } from "../../utils/enums/ride-status.enum"
-import { RideType, RideType as type } from "../../utils/enums/ride-type.enum"
 import { RideRequest } from "../ride-request.model"
 import { Ride } from "../ride.model"
+import { RideRequestOut } from "./ride-request.dto"
 export interface IRideStatus{
-    ride_request:RideStatus
+    ride_status:RideStatus
 } 
 export interface RideIn{
     customer_id:string
     driver_id:string
-    pick_from:string
-    drop_to:string
-    start_time:Date
-    end_time:Date
+    pick_from:Place
+    drop_to:Place
     ride_cost:number
     ride_status:status
-    ride_type:type
+    ride_type_id:string
+    request_id:string
+}
+export interface ICustomerDriver{
+        customer_id:string
+        driver_id:string
+        ride_id:string
+}
+export interface IChangeRideState extends ICustomerDriver{
+    ride_id:string
 }
 
+export interface IChangeRideRequestState extends ICustomerDriver{
+    request_id:string
+}
 export interface RideOut{
-    
+
 }
 
-export function NewRide({customer_id, pick_from, drop_to, ride_cost, ride_type, driver_id}:RideIn):Ride{
+export function NewRide({customer_id, pick_from, drop_to, ride_cost, ride_type_id, driver_id}:RideIn):Ride{
     const newRide = new Ride()
     newRide.customer_id= customer_id
     newRide.pick_from =pick_from
     newRide.drop_to =drop_to
     newRide.accepted_at= new Date()
     newRide.ride_cost=ride_cost
-    newRide.ride_type=ride_type
+    newRide.ride_type_id=ride_type_id
     newRide.driver_id =driver_id
     newRide.ride_status = status.ACCEPTED
     return newRide
@@ -37,4 +48,12 @@ export function NewRide({customer_id, pick_from, drop_to, ride_cost, ride_type, 
 export function toRideOut(ride:Ride):RideOut{
     const rideOut:RideOut=ride as RideOut
     return rideOut
+}
+export function requestToRideIn({customer_id, pick_from, drop_to, cost, ride_type_id,id }:RideRequest){
+    const rideIn:RideIn = {
+        customer_id, pick_from, drop_to, ride_cost: cost, ride_type_id, driver_id: '',
+        ride_status: status.ACCEPTED,
+        request_id: id
+    }
+    return rideIn
 }

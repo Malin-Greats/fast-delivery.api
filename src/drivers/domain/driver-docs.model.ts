@@ -7,16 +7,22 @@ export class DriverDocuments extends BaseEntity{
     id!:string
 
     @Column()
-    personalID!:string
+    national_id!:string
 
     @Column()
     drivers_license!:string
 
     @Column()
-    background_check!:string
+    defensive_drivers_license!:string
 
     @Column()
-    profile_photo!:string
+    police_clearance!:string
+
+    @Column()
+    vehicle_technical_certificate!:string
+    
+    @Column()
+    vehicle_insurance_registration!:string
 
     @CreateDateColumn()
     created_at!:Date

@@ -1,6 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Driver } from "./driver.model";
-import { VehicleIn } from "./dto/vehicle.dto";
 
 @Entity("vehicle")
 export class  Vehicle extends BaseEntity{
@@ -16,9 +15,6 @@ export class  Vehicle extends BaseEntity{
     @Column()
     year!:string 
 
-    @Column()
-    capacity!:string
-
     @Column({unique:true})
     plate_number!:string
 
@@ -27,12 +23,6 @@ export class  Vehicle extends BaseEntity{
 
     @Column()
     driver_id!:string
-    //douments
-    @Column()
-    vehicle_technical_certificate!:string
-    
-    @Column()
-    vehicle_insurance_registration!:string
 
     @ManyToOne(() => Driver, (driver) => driver.vehicles)
     @JoinColumn({name:"driver_id"})

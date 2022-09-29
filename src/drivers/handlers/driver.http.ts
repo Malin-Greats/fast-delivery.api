@@ -65,9 +65,9 @@ export class DriverHandler{
 
     async approveDriver (req:Request, res:Response){
         const apiResponse = new ApiResponse()
-        let driverId=<string>req.params.driverId
+        let {driver_id}=<{driver_id:string}>req.body
         try {
-            apiResponse.data=await this._driverService.approveDriver(driverId)
+            apiResponse.data=await this._driverService.approveDriver(driver_id)
             apiResponse.success = true
         } catch (error) {
             if (isError(error)){
@@ -80,9 +80,9 @@ export class DriverHandler{
     }
     async rejectDriver (req:Request, res:Response){
         const apiResponse = new ApiResponse()
-        let driverId=<string>req.params.driverId
+        let {driver_id}=<{driver_id:string}>req.body
         try {
-            apiResponse.data=await this._driverService.rejectDriver(driverId)
+            apiResponse.data=await this._driverService.rejectDriver(driver_id)
             apiResponse.success = true
         } catch (error) {
             if (isError(error)){

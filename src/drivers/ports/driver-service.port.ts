@@ -1,11 +1,11 @@
-import { DriverApprovalStatus } from "../domain/driver.model"
-import { DriverIn, DriverOut, IDriverApprovalStatus } from "../domain/dto/driver.dto"
+import { DriverIn, DriverOut, IDriverApprovalStatus as ApprovalStatusObj  } from "../domain/dto/driver.dto"
+import { DriverApprovalStatus as ApprovalStatus } from "../utilts/enums/driver-approval-status.enum"
 
 export interface IDriverService{
     registerDriver(driverIn:DriverIn):Promise<DriverOut>
     findDriverById(id:string):Promise<DriverOut>
     findAllDrivers(filterBy:string):Promise<DriverOut[]>
-    approveDriver(driverId: string): Promise<DriverApprovalStatus>
-    rejectDriver(driverId: string): Promise<DriverApprovalStatus>
-    approvalStatus(driverId:string):Promise<IDriverApprovalStatus>
+    approveDriver(driverId: string): Promise<ApprovalStatus>
+    rejectDriver(driverId: string): Promise<ApprovalStatus>
+    approvalStatus(driverId:string):Promise<ApprovalStatusObj>
 }
