@@ -113,14 +113,12 @@ response:
 Add Driver Veichles ---> driver/:driverId/vehicles POST
 request:
 {
-    "model":"Nissan Navara",
+    ***"model":"Nissan Navara",
     "make":"Nissan",
     "year":"2022",
     "capacity":"1000cc to 1500cc",
     "plate_number":"abc2762",
     "color":"red",
-    "vehicle_technical_certificate":"vehicle_technical_certificate.pdf",
-    "vehicle_insurance_registration":"vehicle_insurance_registration.pdf"
 }
 response:
 {
@@ -182,8 +180,10 @@ request:
 {
     "personal_id":"national_id.png",
     "drivers_license":"drivers_license.png",
-    "background_check":"background_check.pdf",
+    "defensive_drivers_license":"defensive_drivers_license.png",
+    "police_clearance":"police_clearance.pdf",
     "profile_photo":"profile_photo.jpg"
+    "vehicle_technical_certificate":"vehicle_technical_certificate.pdf",
 }
 
 response:{
@@ -191,7 +191,7 @@ response:{
     "data": {
         "personalID": "national_id.png",
         "drivers_license": "drivers_license.png",
-        "background_check": "background_check.pdf",
+        "police_clearance": "police_clearance.pdf",
         "profile_photo": "profile_photo.jpg"
     }
 }
@@ -202,7 +202,7 @@ response: {
     "data": {
         "personalID": "https://national_id.png",
         "drivers_license": "https://drivers_license.png",
-        "background_check": "https://background_check.pdf",
+        "police_clearance": "https://police_clearance.pdf",
         "profile_photo": "profile_photo.jpg"
     }
 }
