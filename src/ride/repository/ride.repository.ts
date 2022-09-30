@@ -22,11 +22,17 @@ export class RideRepository implements IRideRepository{
         return ride
     }
 
-    async findAllBy(filter: IObject): Promise<Ride[]> {
+    async findAllBy(filter: IObject|null): Promise<Ride[]> {
         let rides;
         try {
+            if (filter===null){
+                rides =await this.ormRepository.find({
+                    relations:{request:false}
+                })
+            }else{
             rides =await this.ormRepository.find({
-                where: { ...filter.by },} )
+                where: { ...filter.by },relations:{request:false}} )
+            }
         } catch (error ) {
             logger.error(error)
             throw error
@@ -65,7 +71,7 @@ export class RideRepository implements IRideRepository{
         let ride!:Ride;
         try {
             ride =  await this.ormRepository.findOneOrFail({
-                where: { id }
+                where: { id },relations:{request:true}
             })
         } catch (error) {
             if (error instanceof EntityNotFoundError){

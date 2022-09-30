@@ -20,13 +20,13 @@ export const ridesRouteValidator={
     rideRequest:{
         send:[
             body("customer_id").not().isEmpty().withMessage("customer_id is required"),
-            body("pick_from").isJSON().withMessage("pick_from is required"),
-            body("drop_to").isJSON().withMessage("drop_to is required"),
-            body("travel_time").isJSON().withMessage("travel_time is required"),
+            body("pick_from").notEmpty().withMessage("pick_from is required"),
+            body("drop_to").notEmpty().withMessage("drop_to is required"),
+            body("travel_time").notEmpty().withMessage("travel_time is required"),
             body("cost").not().isEmpty().withMessage("cost is required"),
             body("ride_type_id").not().isEmpty().withMessage("ride_type_id is required"),
             body("payment_id").not().isEmpty().withMessage("payment_id is required"),
-            body("travel_information").isJSON().withMessage("travel_information is required")
+            body("travel_information").notEmpty().withMessage("travel_information is required")
         ],
         accept:[
             body("request_id").not().isEmpty().withMessage("request_id is required"),

@@ -14,11 +14,11 @@ export class RidesHandler {
             const driver_id = req.query.driverId
             try {
                 if (customer_id){
-                    console.log(customer_id)
                     apiResponse.data =await this._rideService.findAllRidesBy({by:{customer_id}})
                 }else if(driver_id){
-                    console.log(driver_id)
                     apiResponse.data =await this._rideService.findAllRidesBy({by:{driver_id}})
+                }else {
+                    apiResponse.data =await this._rideService.findAllRidesBy(null)
                 }
                 apiResponse.success =true
             } catch (error) {
