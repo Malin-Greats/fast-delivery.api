@@ -21,18 +21,18 @@ export class RideRequestService implements IRideRequestService{
 
     async createRequest(requestIn: RideRequestIn): Promise<RideRequest> {
         requestIn.request_status =requestStatus.PENDING
-        const requestPending=<IObject>{by:{customer_id:requestIn.customer_id, request_status:requestStatus.PENDING}}
-        const requestAccepted=<IObject>{by:{customer_id:requestIn.customer_id, request_status:requestStatus.ACCEPTED}}
+        // const requestPending=<IObject>{by:{customer_id:requestIn.customer_id, request_status:requestStatus.PENDING}}
+        // const requestAccepted=<IObject>{by:{customer_id:requestIn.customer_id, request_status:requestStatus.ACCEPTED}}
         
-        const [ hasPendingRequest, hasAcceptedRequest] = await Promise.all( [
-            this._rideRequestRepo.findOneBy(requestPending),
-            this._rideRequestRepo.findOneBy(requestAccepted)])
+        // const [ hasPendingRequest, hasAcceptedRequest] = await Promise.all( [
+        //     this._rideRequestRepo.findOneBy(requestPending),
+        //     this._rideRequestRepo.findOneBy(requestAccepted)])
 
-        if (hasPendingRequest ){
-            throw new AppError(`Customer with id: ${requestIn.customer_id} has a pending request`)
-        }else if(hasAcceptedRequest){
-            throw new AppError(`Customer with id: ${requestIn.customer_id} has an accepted request`)
-        }
+        // if (hasPendingRequest ){
+        //     throw new AppError(`Customer with id: ${requestIn.customer_id} has a pending request`)
+        // }else if(hasAcceptedRequest){
+        //     throw new AppError(`Customer with id: ${requestIn.customer_id} has an accepted request`)
+        // }
         const newRequest = await this._rideRequestRepo.create(requestIn)
         return newRequest
     }
@@ -47,12 +47,16 @@ export class RideRequestService implements IRideRequestService{
        if (rideRequest.request_status===requestStatus.PENDING){
         const ACCEPTED= <IRideRequestStatus>{request_status:requestStatus.ACCEPTED}
         const acceptedRequest = await this._rideRequestRepo.update(request_id,{by:ACCEPTED} )
+
         const rideIn:RideIn =requestToRideIn(acceptedRequest)
         rideIn.driver_id =driver_id
+        console.log(rideIn)
         const ride =await this._rideRepo.create(rideIn)
+        console.log(ride)
         return ride
-       }
+       }else{
         throw new AppError(`Ride request already changed to ${rideRequest.request_status} state`)
+       }
     }
 
    async  getCustomerCurrentRequest(customer_id: string): Promise<RideRequest> {

@@ -26,25 +26,24 @@ export class RideService implements IRideService {
         if (request.cancelled_by==="driver"){
             rideStatus = <IRideStatus>{ride_status:status.PENDING }
             const ride =await this._rideRepo.update(request.ride_id,{by:rideStatus})
-            await this._rideRequestRepo.update(ride.request.id, {by:{request_status:requestStatus.PENDING}})
+            await this._rideRequestRepo.update(ride.request_id, {by:{request_status:requestStatus.PENDING}})
         }else if(request.cancelled_by==="customer"){
             rideStatus = <IRideStatus>{ride_status:status.CANCELLED }
             await this._rideRepo.update(request.ride_id,{by:rideStatus})
         }
-
         const cancelledRide =await this._cancelledRidesService.cancelRide(request)
         return cancelledRide
     }
 
     async startRide(ride_id: string): Promise<RideOut> {
-        const rideStatus = <IRideStatus>{ride_status:status.STARTED }
+        const rideStatus = <IRideStatus>{ride_status:status.STARTED , start_time:new Date()}
         const ride = await this._rideRepo.update(ride_id,{by:rideStatus})
         const rideOut = toRideOut(ride)
         return rideOut
     }
 
     async stopRide( ride_id: string): Promise<RideOut> {
-        const rideStatus = <IRideStatus>{ride_status:status.STOPPED }
+        const rideStatus = <IRideStatus>{ride_status:status.STOPPED, end_time:new Date() }
         const ride = await this._rideRepo.update(ride_id,{by:rideStatus})
         const rideOut = toRideOut(ride)
         return rideOut
@@ -55,7 +54,7 @@ export class RideService implements IRideService {
         return ride
     }
 
-    async findAllRidesBy(filter:IObject): Promise<RideOut[]>{
+    async findAllRidesBy(filter:IObject|null): Promise<RideOut[]>{
         const rides= await this._rideRepo.findAllBy(filter)
         const ridesOut:RideOut[]=[]
         for (let ride of rides){
@@ -73,4 +72,6 @@ export class RideService implements IRideService {
     async payForRide(customerId: string, rideId: string): Promise<RideOut> {
         throw new Error("Method not implemented.");
     }
+
+   
 }

@@ -17,6 +17,7 @@ export class RideRequestHandler {
         }
         const apiResponse= new ApiResponse()
         const requestIn=<RideRequestIn>req.body
+        console.log(requestIn)
 
         try {
             apiResponse.data =await this._rideRequestService.createRequest(requestIn)
@@ -38,7 +39,6 @@ export class RideRequestHandler {
         }
         const apiResponse= new ApiResponse()
         const {driver_id, request_id}=<IDriverChangeRequestState>req.body
-
 
         try {
             apiResponse.data =await this._rideRequestService.acceptRequest(driver_id, request_id)

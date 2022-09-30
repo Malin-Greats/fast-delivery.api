@@ -53,13 +53,13 @@ export class  Ride extends BaseEntity{
     travel_information!:TravelInfo
 
     @Column({default:0})
-    rating!:number
+    rating?:number
 
     @ManyToOne(() => Driver, (driver) => driver.rides)
     @JoinColumn({name:"driver_id"})
     driver!: Driver
 
-    @OneToOne(type => RideRequest,{eager:true}) @JoinColumn({name:"request_id"})
+    @OneToOne(type => RideRequest,) @JoinColumn({name:"request_id"})
     request!:RideRequest
 }
 
