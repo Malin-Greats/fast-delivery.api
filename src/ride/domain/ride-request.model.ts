@@ -3,7 +3,7 @@ import { Place } from "../../shared/dto/location.dto"
 import { TravelInfo } from "../../shared/dto/travel-info.dto"
 import { RideRequestStatus } from "../utils/enums/request-status.enum"
 
-@Entity("ride_request")
+@Entity()
 export class  RideRequest extends BaseEntity{
     @PrimaryGeneratedColumn()
     id!: string
@@ -11,10 +11,10 @@ export class  RideRequest extends BaseEntity{
     @Column()
     customer_id!:string
 
-    @Column('json')
+    @Column('simple-json')
     pick_from!:Place
 
-    @Column('json')
+    @Column('simple-json')
     drop_to!:Place
 
     @Column({
@@ -37,7 +37,7 @@ export class  RideRequest extends BaseEntity{
 
     @Column()
     is_paid_for!:boolean
-    @Column('json')
+    @Column('simple-json')
     travel_information!:TravelInfo
 
     @CreateDateColumn()

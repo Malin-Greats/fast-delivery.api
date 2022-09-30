@@ -42,13 +42,13 @@ export function rideRoutes():Router{
     ridesRouter
     .get("/",async(req:Request,res:Response)=>{rideHandler.findAllRides(req, res)})
     .get("/:rideId", async(req:Request,res:Response)=>{rideHandler.findRideById(req, res)})
-    .put("/cancel",async(req:Request,res:Response)=>{rideHandler.cancelRide(req, res)})
+    .post("/cancel",async(req:Request,res:Response)=>{rideHandler.cancelRide(req, res)})
     .put("/start", async(req:Request,res:Response)=>{rideHandler.startRide(req, res)})
     .put("/stop", async(req:Request,res:Response)=>{rideHandler.stopRide(req, res)})
     .post("/:rideId/pay",async(req:Request,res:Response)=>{rideHandler.payForRide(req, res)})
 
     ridesRequestsRouter
-    .put("/accept", v.rideRequest.accept,async(req:Request,res:Response)=>{rideRequestHandler.acceptRequest(req, res)})
+    .put("/accept",async(req:Request,res:Response)=>{rideRequestHandler.acceptRequest(req, res)})
     .get("/all-pending", async(req:Request,res:Response)=>{rideRequestHandler.broadcastPendingRequest(req, res)})
     .put("/cancel",async(req:Request,res:Response)=>{rideRequestHandler.cancelRequest(req, res)})
     .get("/current", async(req:Request,res:Response)=>{rideRequestHandler.customerCurrentRequest(req, res)})

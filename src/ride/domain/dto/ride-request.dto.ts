@@ -10,9 +10,9 @@ export interface RideRequestIn{
     travel_time:string
     cost:number
     ride_type_id:string
-    request_status:RideRequestStatus
     payment_id:string
     travel_information:TravelInfo
+    request_status:RideRequestStatus
 }
 export interface RideRequestOut{
     id:string
@@ -28,14 +28,17 @@ export interface RideRequestOut{
     created_at:Date
     travel_information:TravelInfo
 }
-export function NewRideRequest ({customer_id, pick_from, drop_to,cost, travel_time, ride_type_id, payment_id}:RideRequestIn):RideRequest{
+export function NewRideRequest ({customer_id, pick_from, drop_to,cost, travel_time, ride_type_id, payment_id, travel_information, request_status}:RideRequestIn):RideRequest{
     const newRideRequest:RideRequest = new RideRequest()
     newRideRequest.customer_id= customer_id
     newRideRequest.pick_from =pick_from
     newRideRequest.drop_to =drop_to
     newRideRequest.travel_time=travel_time
+    request_status?newRideRequest.request_status =request_status:request_status=RideRequestStatus.PENDING
     newRideRequest.cost=cost
     newRideRequest.ride_type_id=ride_type_id
     newRideRequest.payment_id=payment_id
+    newRideRequest.travel_information = travel_information
+    newRideRequest.is_paid_for=false
     return newRideRequest
 }
