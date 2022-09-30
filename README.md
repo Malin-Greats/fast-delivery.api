@@ -173,8 +173,6 @@ response:
         }
     ]
 }
-
-
 Add Driver Documents  /driver/:driverId/documents
 request: 
 {
@@ -295,3 +293,504 @@ esponse:
     }
     success:false
 }
+
+/ride-requests/send POST
+ request :{
+    "customer_id": "2",
+    "pick_from": {
+        "address": "787 Harare",
+        "description": "Description",
+        "location": {
+            "lat": "-17.783",
+            "lng": "89.789"
+        }
+    },
+    "drop_to": {
+        "address": "787 Harare",
+        "description": "Description",
+        "location": {
+            "lat": "-17.783",
+            "lng": "89.789"
+        }
+    },
+    "travel_time": "128978",
+    "cost": 89,
+    "ride_type_id": "1",
+    "payment_id": "1",
+    "travel_information": {
+        "distance": {
+            "text": "1",
+            "value": "300"
+        },
+        "duration": {
+            "text": "1",
+            "value": "300"
+        }
+    }
+}
+
+
+response:
+{
+    "success": true,
+    "data": {
+        "id": 3,
+        "customer_id": "2",
+        "pick_from": {
+            "address": "787 Harare",
+            "description": "Description",
+            "location": {
+                "lat": "-17.783",
+                "lng": "89.789"
+            }
+        },
+        "drop_to": {
+            "address": "787 Harare",
+            "description": "Description",
+            "location": {
+                "lat": "-17.783",
+                "lng": "89.789"
+            }
+        },
+        "request_status": "pending",
+        "travel_time": "128978",
+        "cost": 89,
+        "payment_id": "1",
+        "ride_type_id": "1",
+        "is_paid_for": false,
+        "travel_information": {
+            "distance": {
+                "text": "1",
+                "value": "300"
+            },
+            "duration": {
+                "text": "1",
+                "value": "300"
+            }
+        },
+        "created_at": "2022-09-30T07:22:45.126Z"
+    }
+}
+
+---------------------------------------------------------------------------------------
+/ride-requests/accept PUT 
+request :
+{
+    "request_id":"11",
+    "driver_id":"1"
+}
+
+response :
+"success": true,
+    "data": {
+        "id": 10,
+        "request_id": 11,
+        "customer_id": "2",
+        "driver_id": "1",
+        "pick_from": {
+            "address": "787 Harare",
+            "description": "Description",
+            "location": {
+                "lat": "-17.783",
+                "lng": "89.789"
+            }
+        },
+        "drop_to": {
+            "address": "787 Harare",
+            "description": "Description",
+            "location": {
+                "lat": "-17.783",
+                "lng": "89.789"
+            }
+        },
+        "accepted_at": "2022-09-30T08:15:02.839Z",
+        "start_time": null,
+        "end_time": null,
+        "ride_cost": "89",
+        "ride_status": "accepted",
+        "ride_type_id": "1",
+        "is_paid_for": false,
+        "travel_information": {
+            "distance": {
+                "text": "1",
+                "value": "300"
+            },
+            "duration": {
+                "text": "1",
+                "value": "300"
+            }
+        },
+        "rating": 0
+    }
+}
+
+-------------------------------------------------------------------------------------------
+rides GET ALL RIDES OR FILTER RIDES BY EITHER customer_id or driver_id
+GET ALL RIDES
+request : /rides
+FILTER
+request : /rides/?customerId=2   rides/?driverId=1
+response:{
+    "success": true,
+    "data": [
+        {
+            "id": 10,
+            "request_id": 11,
+            "customer_id": "2",
+            "driver_id": 1,
+            "pick_from": {
+                "address": "787 Harare",
+                "description": "Description",
+                "location": {
+                    "lat": "-17.783",
+                    "lng": "89.789"
+                }
+            },
+            "drop_to": {
+                "address": "787 Harare",
+                "description": "Description",
+                "location": {
+                    "lat": "-17.783",
+                    "lng": "89.789"
+                }
+            },
+            "accepted_at": "2022-09-30T08:15:02.839Z",
+            "start_time": null,
+            "end_time": null,
+            "ride_cost": "89",
+            "ride_status": "accepted",
+            "ride_type_id": "1",
+            "is_paid_for": false,
+            "travel_information": {
+                "distance": {
+                    "text": "1",
+                    "value": "300"
+                },
+                "duration": {
+                    "text": "1",
+                    "value": "300"
+                }
+            },
+            "rating": 0
+        }
+    ]
+}
+---------------------------------------------------
+start request : {ride_id:"10"} PUT
+rides/start
+{
+    "success": true,
+    "data": {
+        "id": 10,
+        "request_id": 11,
+        "customer_id": "2",
+        "driver_id": 1,
+        "pick_from": {
+            "address": "787 Harare",
+            "description": "Description",
+            "location": {
+                "lat": "-17.783",
+                "lng": "89.789"
+            }
+        },
+        "drop_to": {
+            "address": "787 Harare",
+            "description": "Description",
+            "location": {
+                "lat": "-17.783",
+                "lng": "89.789"
+            }
+        },
+        "accepted_at": "2022-09-30T08:15:02.839Z",
+        "start_time": "2022-09-30T08:24:21.857Z",
+        "end_time": null,
+        "ride_cost": "89",
+        "ride_status": "stated",
+        "ride_type_id": "1",
+        "is_paid_for": false,
+        "travel_information": {
+            "distance": {
+                "text": "1",
+                "value": "300"
+            },
+            "duration": {
+                "text": "1",
+                "value": "300"
+            }
+        },
+        "rating": 0,
+        "request": {
+            "id": 11,
+            "customer_id": "2",
+            "pick_from": {
+                "address": "787 Harare",
+                "description": "Description",
+                "location": {
+                    "lat": "-17.783",
+                    "lng": "89.789"
+                }
+            },
+            "drop_to": {
+                "address": "787 Harare",
+                "description": "Description",
+                "location": {
+                    "lat": "-17.783",
+                    "lng": "89.789"
+                }
+            },
+            "request_status": "accepted",
+            "travel_time": "128978",
+            "cost": "89",
+            "payment_id": "1",
+            "ride_type_id": "1",
+            "is_paid_for": false,
+            "travel_information": {
+                "distance": {
+                    "text": "1",
+                    "value": "300"
+                },
+                "duration": {
+                    "text": "1",
+                    "value": "300"
+                }
+            },
+            "created_at": "2022-09-30T08:14:55.631Z"
+        }
+    }
+}
+
+----------------------------------
+
+rides/stop
+request : {ride_id:"10"} PUT
+response: {
+    "success": true,
+    "data": {
+        "id": 10,
+        "request_id": 11,
+        "customer_id": "2",
+        "driver_id": 1,
+        "pick_from": {
+            "address": "787 Harare",
+            "description": "Description",
+            "location": {
+                "lat": "-17.783",
+                "lng": "89.789"
+            }
+        },
+        "drop_to": {
+            "address": "787 Harare",
+            "description": "Description",
+            "location": {
+                "lat": "-17.783",
+                "lng": "89.789"
+            }
+        },
+        "accepted_at": "2022-09-30T08:15:02.839Z",
+        "start_time": "2022-09-30T08:24:21.857Z",
+        "end_time": "2022-09-30T08:27:52.615Z",
+        "ride_cost": "89",
+        "ride_status": "stopped",
+        "ride_type_id": "1",
+        "is_paid_for": false,
+        "travel_information": {
+            "distance": {
+                "text": "1",
+                "value": "300"
+            },
+            "duration": {
+                "text": "1",
+                "value": "300"
+            }
+        },
+        "rating": 0,
+        "request": {
+            "id": 11,
+            "customer_id": "2",
+            "pick_from": {
+                "address": "787 Harare",
+                "description": "Description",
+                "location": {
+                    "lat": "-17.783",
+                    "lng": "89.789"
+                }
+            },
+            "drop_to": {
+                "address": "787 Harare",
+                "description": "Description",
+                "location": {
+                    "lat": "-17.783",
+                    "lng": "89.789"
+                }
+            },
+            "request_status": "accepted",
+            "travel_time": "128978",
+            "cost": "89",
+            "payment_id": "1",
+            "ride_type_id": "1",
+            "is_paid_for": false,
+            "travel_information": {
+                "distance": {
+                    "text": "1",
+                    "value": "300"
+                },
+                "duration": {
+                    "text": "1",
+                    "value": "300"
+                }
+            },
+            "created_at": "2022-09-30T08:14:55.631Z"
+        }
+    }
+}
+
+/rides/cancel POST
+request :{
+     "ride_id":"10",
+    "cancelled_by":"driver",
+    "reason":"car break down"
+}
+response:
+{
+    "success": true,
+    "data": {
+        "cancellation_details": {
+            "ride_id": "10",
+            "cancelled_by": "driver",
+            "cancelled_time": "2022-09-30T08:37:14.428Z",
+            "penalt_fee": 0.2,
+            "reason": "car break down"
+        }
+    }
+}
+
+
+//GET ride by id
+request: rides/10
+
+response :{
+    "success": true,
+    "data": {
+        "id": 10,
+        "request_id": 11,
+        "customer_id": "2",
+        "driver_id": 1,
+        "pick_from": {
+            "address": "787 Harare",
+            "description": "Description",
+            "location": {
+                "lat": "-17.783",
+                "lng": "89.789"
+            }
+        },
+        "drop_to": {
+            "address": "787 Harare",
+            "description": "Description",
+            "location": {
+                "lat": "-17.783",
+                "lng": "89.789"
+            }
+        },
+        "accepted_at": "2022-09-30T08:15:02.839Z",
+        "start_time": "2022-09-30T08:24:21.857Z",
+        "end_time": "2022-09-30T08:27:52.615Z",
+        "ride_cost": "89",
+        "ride_status": "pending",
+        "ride_type_id": "1",
+        "is_paid_for": false,
+        "travel_information": {
+            "distance": {
+                "text": "1",
+                "value": "300"
+            },
+            "duration": {
+                "text": "1",
+                "value": "300"
+            }
+        },
+        "rating": 0,
+        "request": {
+            "id": 11,
+            "customer_id": "2",
+            "pick_from": {
+                "address": "787 Harare",
+                "description": "Description",
+                "location": {
+                    "lat": "-17.783",
+                    "lng": "89.789"
+                }
+            },
+            "drop_to": {
+                "address": "787 Harare",
+                "description": "Description",
+                "location": {
+                    "lat": "-17.783",
+                    "lng": "89.789"
+                }
+            },
+            "request_status": "pending",
+            "travel_time": "128978",
+            "cost": "89",
+            "payment_id": "1",
+            "ride_type_id": "1",
+            "is_paid_for": false,
+            "travel_information": {
+                "distance": {
+                    "text": "1",
+                    "value": "300"
+                },
+                "duration": {
+                    "text": "1",
+                    "value": "300"
+                }
+            },
+            "created_at": "2022-09-30T08:14:55.631Z"
+        }
+    }
+}
+---------------------------------------------------------------------------
+/ride-requests/all-pending
+GET ALL PENDING REQUEST TO BROADCAST TO DRIVERS
+{
+    "success": true,
+    "data": [
+        {
+            "id": 2,
+            "customer_id": "2",
+            "pick_from": {
+                "address": "787 Harare",
+                "description": "Description",
+                "location": {
+                    "lat": "-17.783",
+                    "lng": "89.789"
+                }
+            },
+            "drop_to": {
+                "address": "787 Harare",
+                "description": "Description",
+                "location": {
+                    "lat": "-17.783",
+                    "lng": "89.789"
+                }
+            },
+            "request_status": "pending",
+            "travel_time": "128978",
+            "cost": "89",
+            "payment_id": "1",
+            "ride_type_id": "1",
+            "is_paid_for": false,
+            "travel_information": {
+                "distance": {
+                    "text": "1",
+                    "value": "300"
+                },
+                "duration": {
+                    "text": "1",
+                    "value": "300"
+                }
+            },
+            "created_at": "2022-09-29T21:14:12.549Z"
+        }
+    ]
+}
+
