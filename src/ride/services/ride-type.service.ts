@@ -17,7 +17,7 @@ export class RideTypeService implements IRideTypeService{
         return typeUpdated
     }
 
-    async deleteRideTYpe(id: string): Promise<RideType> {
+    async deleteRideType(id: string): Promise<RideType> {
         const typeDeleted = this._rideTypeRepo.delete(id)
         return typeDeleted
     }

@@ -1,7 +1,9 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm"
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, ManyToOne, OneToOne } from "typeorm"
+import { Customer } from "../../customers/domain/customer.model"
 import { Place } from "../../shared/dto/location.dto"
 import { TravelInfo } from "../../shared/dto/travel-info.dto"
 import { RideRequestStatus } from "../utils/enums/request-status.enum"
+import { RideType } from "./ride-type.model"
 
 @Entity()
 export class  RideRequest extends BaseEntity{
@@ -42,5 +44,12 @@ export class  RideRequest extends BaseEntity{
 
     @CreateDateColumn()
     created_at!:Date
+
+    @ManyToOne(() => Customer, (customer) => customer.ride_requests)
+    @JoinColumn({name:"customer_id"})
+    customer!: Customer
+
+    @ManyToOne(type => RideType,{eager:true}) @JoinColumn({name:"ride_type_id"})
+    ride_type!:RideType
 }
 

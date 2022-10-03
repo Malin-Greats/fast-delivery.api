@@ -2,6 +2,7 @@ import { RideRequest } from "../ride-request.model"
 import { RideRequestStatus } from "../../utils/enums/request-status.enum"
 import{ Place }  from "../../../shared/dto/location.dto"
 import  {TravelInfo} from "../../../shared/dto/travel-info.dto"
+import { RideType } from "../ride-type.model"
 
 export interface RideRequestIn{
     customer_id:string
@@ -21,11 +22,10 @@ export interface RideRequestOut{
     drop_to:Place
     travel_time:string
     cost:number
-    ride_type_id: string
     request_status:RideRequestStatus
     is_paid_for:boolean
-    payment_id:string
     created_at:Date
+    ride_type:RideType
     travel_information:TravelInfo
 }
 export function NewRideRequest ({customer_id, pick_from, drop_to,cost, travel_time, ride_type_id, payment_id, travel_information, request_status}:RideRequestIn):RideRequest{

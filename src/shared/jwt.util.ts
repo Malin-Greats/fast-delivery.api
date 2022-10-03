@@ -16,7 +16,7 @@ class JwtAuth{
             const SECRET=process.env.JWT_SECRET_KEY as string
             access_token= sign(payload,SECRET ,  { expiresIn:expires_in})
         } catch (error) {
-            throw new AppError("Unauthorized Access. Please login!")
+            throw new AppError("Unauthorized Access. Token Expired!")
         }
 
         return {access_token, expires_in}
@@ -27,7 +27,7 @@ class JwtAuth{
             const SECRET=process.env.JWT_SECRET_KEY as string
             return await verify(token, SECRET) as Payload
         } catch (error) {
-           throw new AppError("Unauthorized Access.")
+           throw new AppError("Unauthorized Access. Invalid token")
         }
 
     }

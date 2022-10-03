@@ -19,7 +19,6 @@ export const ridesRouteValidator={
     },
     rideRequest:{
         send:[
-            body("customer_id").not().isEmpty().withMessage("customer_id is required"),
             body("pick_from").notEmpty().withMessage("pick_from is required"),
             body("drop_to").notEmpty().withMessage("drop_to is required"),
             body("travel_time").notEmpty().withMessage("travel_time is required"),

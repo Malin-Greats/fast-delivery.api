@@ -9,12 +9,42 @@ export class RideRequestRepository implements IRideRequestRepository{
 
     constructor (private ormRepository:Repository<RideRequest>){}
 
+    async delete(filter: IObject): Promise<RideRequest> {
+        const request = await this.findBy(filter);
+        
+        let removed!:RideRequest;
+        try {
+            if(request){
+                removed=await this.ormRepository.remove(request);
+            }else{
+                throw new AppError("Ride request not found.")
+            }
+            
+        } catch (error) {
+            throw error
+        }
+        return removed;
+
+    }
+
+    async findOneBy(filter: IObject): Promise<RideRequest> {
+        let ride;
+        try {
+            ride =await this.ormRepository.findOneOrFail({
+                where: { ...filter.by },} )
+        } catch (error ) {
+            throw error
+        }
+        return ride
+    }
+
     async create(requestIn: RideRequestIn): Promise<RideRequest> {
         const newRequest = NewRideRequest(requestIn);
+        newRequest
         let savedRequest!:RideRequest
         try {
-            const user = await this.ormRepository.create(newRequest);
-            savedRequest=await this.ormRepository.save(user)
+            const request = await this.ormRepository.create(newRequest);
+            savedRequest=await this.ormRepository.save(request)
         } catch (error ) {
             throw error
         }
@@ -50,30 +80,20 @@ export class RideRequestRepository implements IRideRequestRepository{
         }
         return  ride
     }
-    async findOneBy(filter: IObject): Promise<RideRequest> {
-        let ride!:RideRequest;
+    async findBy(filter: IObject): Promise<RideRequest | null> {
         let filterBy= filter.by
-        try {
-            ride =  await this.ormRepository.findOneOrFail({
+        let ride =  await this.ormRepository.findOne({
                 where: { ...filterBy}
             })
-        } catch (error) {
-            if (error instanceof EntityNotFoundError){
-                throw new AppError(`The ride_request with attributes "${filter.by}" does not exist!`);
-            }else{
-                throw error
-            }
-        }
         return  ride
     }
 
-    async findAllBy(filter: IObject): Promise<RideRequest[]> {
+    async findAllBy(filter?: IObject): Promise<RideRequest[]> {
         let rideRequests!:RideRequest[]
-        const filterBy=filter.by
         try {
             rideRequests =await this.ormRepository.find(
                 {
-                    where:{...filterBy}
+                    where:{...filter?.by}
                 }
             )
         } catch (error) {

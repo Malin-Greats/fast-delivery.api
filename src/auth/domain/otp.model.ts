@@ -1,6 +1,9 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user.model";
+import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
+interface UserJson{
+  user_id:string;
+  role:string
+}
 @Entity()
 export class UserOTP  extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -9,8 +12,8 @@ export class UserOTP  extends BaseEntity {
   @Column()
   otp!: string;
 
-  @Column()
-  user_id!: string;
+  @Column("simple-json")
+  user!: UserJson;
 
   @Column({type: 'bigint'})
   createdAt!: number;
@@ -18,6 +21,4 @@ export class UserOTP  extends BaseEntity {
   @Column({type: 'bigint'})
   expiredAt!: number;
 
-  @OneToOne(type => User) @JoinColumn({name:"user_id"})
-   user!: User;
 }

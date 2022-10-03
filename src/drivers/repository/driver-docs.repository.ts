@@ -1,4 +1,5 @@
 import { EntityNotFoundError, Repository } from "typeorm";
+import { IObject } from "../../shared/dto/filter-by.dto";
 import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
 import { DriverDocuments } from "../domain/driver-docs.model";
@@ -18,13 +19,17 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
        try {
         savedDocumemts=await this.ormRepository.save(documents)
        } catch (error ) {
+            const {code} =error as {code:string}
+            if (code==="23505"){
+                throw new AppError("Aready upload documents")
+            }
             throw error
        }
        return savedDocumemts
     }
 
-    async delete(id: string): Promise<DriverDocuments> {
-        const documents = await this.findById(id);
+    async delete(filter: IObject): Promise<DriverDocuments> {
+        const documents = await this.findBy(filter);
         let removed!:DriverDocuments;
         try {
             removed=await this.ormRepository.remove(documents);
@@ -43,7 +48,7 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
                 where: { driver_id:driverId }})
         } catch (error) {
             if (error instanceof EntityNotFoundError){
-                throw new AppError(`The documents fot the driver with id: ${driverId} does not exist!`);
+                throw  new AppError(`No documents exist!`);
             }else{
                 logger.error(error)
                 throw error
@@ -59,7 +64,7 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
                 where: { id }})
         } catch (error) {
             if (error instanceof EntityNotFoundError){
-                throw new AppError(`The documents with id: ${id} does not exist!`);
+                throw new AppError(`No documents exist!`);
             }else{
                 logger.error(error)
                 throw error
@@ -67,8 +72,8 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
         }
         return  documents
     }
-    async update(id: string, documentsIn: DriverDocumentsIn): Promise<DriverDocuments> {
-            const documents = await this.findById(id);
+    async update(filter: IObject, documentsIn: DriverDocumentsIn): Promise<DriverDocuments> {
+            const documents = await this.findBy(filter);
             Object.assign(documents, documentsIn);
             let updateDocuments!:DriverDocuments
             try {
@@ -90,6 +95,25 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
             throw  error
         }
         return documents
+    }
+
+    async findBy(filter: IObject): Promise<DriverDocuments> {
+        let vehicle!:DriverDocuments;
+        let filterBy= filter.by
+        try {
+            vehicle =  await this.ormRepository.findOneOrFail({
+                where: { ...filterBy}
+            })
+        } catch (error) {
+            if (error instanceof EntityNotFoundError){
+                throw new AppError(`No documents exist!`);
+            }else{
+                logger.error(error)
+                throw error
+            }
+        }
+        
+        return  vehicle
     }
 
 }

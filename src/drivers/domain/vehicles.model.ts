@@ -24,9 +24,6 @@ export class  Vehicle extends BaseEntity{
     @Column()
     driver_id!:string
 
-    @ManyToOne(() => Driver, (driver) => driver.vehicles)
-    @JoinColumn({name:"driver_id"})
-    driver!: Driver
 
     @CreateDateColumn()
     created_at!:Date

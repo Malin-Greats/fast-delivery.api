@@ -1,5 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, Generated, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { User } from "./user.model";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { UserOTP_JSON } from "./dto/auth/otp.dto";
 
   export interface IUserToken {
     id: string;
@@ -16,12 +16,9 @@ import { User } from "./user.model";
     @Column()
     token!: string;
 
-    @Column()
-    user_id!: string;
+    @Column("simple-json")
+    user!:UserOTP_JSON;
 
-    @OneToOne(type => User) @JoinColumn()
-    user!: User;
-    
     @CreateDateColumn()
     created_at!: Date;
 

@@ -80,7 +80,7 @@ export class RideTypeHandler{
         const apiResponse = new ApiResponse()
         let rideTypeID=<string>req.params.rideTypeId
         try {
-            apiResponse.data=await this._typeService.deleteRideTYpe(rideTypeID)
+            apiResponse.data=await this._typeService.deleteRideType(rideTypeID)
             apiResponse.success = true
         } catch (error) {
             if (isError(error)){
