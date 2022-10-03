@@ -6,6 +6,7 @@ export interface IRideRequestRepository{
     create(requestIn:RideRequestIn):Promise<RideRequest>
     update(id:string,requestIn:IObject):Promise<RideRequest>
     findById(id:string):Promise<RideRequest>
-    findAllBy(filter:IObject):Promise<RideRequest[]>
-    findOneBy(filter:IObject):Promise<RideRequest>
+    findAllBy(filter?:IObject):Promise<RideRequest[]>
+    findBy(filter:IObject):Promise<RideRequest|null>
+    delete(filter:IObject):Promise<RideRequest>
 }

@@ -1,6 +1,10 @@
+export interface UserOTP_JSON{
+    id:string;
+    role:string;
+}
 export   interface OTPIn{
     otp:string
-    user_id:string
+    user:UserOTP_JSON
 }
 
 export   interface OTPOut{
@@ -10,5 +14,6 @@ export   interface OTPOut{
     otp:string
     created_at:string
 }
+
 
 

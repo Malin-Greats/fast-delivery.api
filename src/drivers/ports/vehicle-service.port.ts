@@ -1,3 +1,4 @@
+import { IObject } from "../../shared/dto/filter-by.dto";
 import { VehicleOut, VehicleIn } from "../domain/dto/vehicle.dto";
 
 export interface IVehicleService{
@@ -7,4 +8,5 @@ export interface IVehicleService{
     deleteVehicle(id:string):Promise<VehicleOut>
     findDriverVehicles(driverId:string):Promise<VehicleOut[]>
     findAllVehicles():Promise<VehicleOut[]>
+    findVehicleBy(filter: IObject):Promise<VehicleOut>
 }

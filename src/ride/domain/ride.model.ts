@@ -1,9 +1,11 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToOne} from "typeorm"
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToOne, OneToMany} from "typeorm"
+import { Customer } from "../../customers/domain/customer.model"
 import { Driver } from "../../drivers/domain/driver.model"
 import { Place } from "../../shared/dto/location.dto"
 import { TravelInfo } from "../../shared/dto/travel-info.dto"
 import { RideStatus } from "../utils/enums/ride-status.enum"
 import { RideRequest } from "./ride-request.model"
+import { RideType } from "./ride-type.model"
 
 @Entity("rides")
 export class  Ride extends BaseEntity{
@@ -55,12 +57,21 @@ export class  Ride extends BaseEntity{
     @Column({default:0})
     rating?:number
 
-    @ManyToOne(() => Driver, (driver) => driver.rides)
-    @JoinColumn({name:"driver_id"})
-    driver!: Driver
 
-    @OneToOne(type => RideRequest,) @JoinColumn({name:"request_id"})
+
+    @ManyToOne(() => Customer, (customer) => customer.rides)
+    @JoinColumn({name:"customer_id"})
+    customer!: Customer
+
+    // @ManyToOne(() => Driver, (driver) => driver.rides)
+    // @JoinColumn({name:"driver_id"})
+    // driver!: Driver
+
+    @ManyToOne(type => RideRequest,) @JoinColumn({name:"request_id"})
     request!:RideRequest
+
+    @ManyToOne(type => RideType,) @JoinColumn({name:"ride_type_id"})
+    ride_type!:RideType
 }
 
 

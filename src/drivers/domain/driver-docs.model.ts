@@ -1,4 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Driver } from "./driver.model";
 import { DriverDocumentsIn } from "./dto/driver-docs.dto";
 
 @Entity("driver_documents")
@@ -20,7 +21,7 @@ export class DriverDocuments extends BaseEntity{
 
     @Column()
     vehicle_technical_certificate!:string
-    
+
     @Column()
     vehicle_insurance_registration!:string
 

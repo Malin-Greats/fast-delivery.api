@@ -1,7 +1,7 @@
-export interface IFilter {
+export interface Ob {
     by:object
 }
 
 export interface IObject {
-    by:object
+    by:{[k: string]: any}
 }

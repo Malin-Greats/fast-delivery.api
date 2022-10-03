@@ -3,71 +3,112 @@ import { psqlDB } from "../../data-source"
 import { DriverRepository } from "../repository/driver.repository"
 import { VehicleRepository } from "../repository/vehicle.repository"
 import { DriverDocumentsRepository } from "../repository/driver-docs.repository"
-import { DriverService } from "../services/driver.service"
-import { VehicleService } from "../services/vehicle.service"
-import { DriverDocumentsService } from "../services/driver-docs.service"
+import { DriverService } from "../services/driver.svc"
+import { VehicleService } from "../services/vehicle.svc"
+import { DriverDocumentsService } from "../services/driver-docs.svc"
 import { DriverHandler } from "../handlers/driver.http"
 import { VehicleHandler } from "../handlers/vehicle.http"
 import { DriverDocumentsHandler } from "../handlers/documents.http"
 import { ERole as role, Role } from "../../auth/domain/role.model"
-import { User } from "../../auth/domain/user.model"
-import { UserRepository } from "../../auth/repository/user.repository"
-import { Driver } from "../domain/driver.model"
-import { Vehicle } from "../domain/vehicles.model"
-import { DriverDocuments } from "../domain/driver-docs.model"
-import { RoleRepository } from "../../auth/repository/role.repository"
 import { driverRouteValidator as v} from "./routes.validator"
 import { isDriverExists } from "../utilts/is-driver-exists.middleware"
 import { isAuthorized } from "../../shared/middleware/isAuthorized"
+import { DriverProfileHandler } from "../handlers/driver-profile.http"
+import { DriverAuthHandler } from "../handlers/driver-auth.http"
+import { IRoleRepository } from "../../auth/ports/role-repository.port"
+import { DriverAuthSvc } from "../services/driver-auth.svc"
+import { Driver } from "../domain/driver.model"
+import { DriverProfileSvc } from "../services/driver-profile.svc"
+import { Vehicle } from "../domain/vehicles.model"
+import { DriverDocuments } from "../domain/driver-docs.model"
+import { ShareRouteValidator as vShared } from "../../shared/validators/route-validators"
 
-export function driverRoutes():Router{
-    const roleRepository = new RoleRepository(psqlDB.DataSrc.getRepository(Role))
-    const userRepository = new UserRepository(psqlDB.DataSrc.getRepository(User))
-    const driverRepository = new DriverRepository(psqlDB.DataSrc.getRepository(Driver))
-    const vehicleRepository = new VehicleRepository(psqlDB.DataSrc.getRepository(Vehicle))
-    const driverDocsRepository = new DriverDocumentsRepository(psqlDB.DataSrc.getRepository(DriverDocuments))
+export class DriverRoutes{
 
-    const driverService = new DriverService(driverRepository, userRepository, roleRepository)
-    const vehicleService = new VehicleService(vehicleRepository)
-    const driverDocsService = new DriverDocumentsService(driverDocsRepository)
+    private driverRepo;
+    private driverSvc;
+    private driverAuthSvc;
+    private driverHandler;
+    private driverAuthHandler;
+    private driverProfileSvc
+    private driverProfileHandler;
+    private vehicleRepo;
+    private vehicleSvc;
+    private documentdsRepo;
+    private documentsSvc;
+    private vehicleHandler;
+    private documentsHandler
 
-    const driverHandler = new DriverHandler(driverService)
-    const vehicleHandler = new VehicleHandler(vehicleService)
-    const driverDocsHandler = new DriverDocumentsHandler(driverDocsService)
+    constructor(private _roleRepo:IRoleRepository){
+        this.driverRepo = new DriverRepository(psqlDB.DataSrc.getRepository(Driver))
+        this.vehicleRepo = new VehicleRepository(psqlDB.DataSrc.getRepository(Vehicle))
+        this.documentdsRepo = new DriverDocumentsRepository(psqlDB.DataSrc.getRepository(DriverDocuments))
+            
+        this.driverSvc = new DriverService( this.driverRepo,  this._roleRepo)
+        this.driverAuthSvc = new DriverAuthSvc(this.driverRepo, this._roleRepo)
+        this.driverProfileSvc = new DriverProfileSvc( this.driverRepo)
+        this.vehicleSvc = new VehicleService(this.vehicleRepo)
+        this.documentsSvc = new DriverDocumentsService(this.documentdsRepo)
 
-    const driverRouter= Router()
-    const signUpRouter=Router()
+        this.vehicleHandler = new VehicleHandler(this.vehicleSvc)
+        this.driverHandler = new DriverHandler( this.driverSvc)
+        this.driverAuthHandler =  new DriverAuthHandler( this.driverAuthSvc)
+        this.documentsHandler = new DriverDocumentsHandler(this.documentsSvc)
+        this.driverProfileHandler = new DriverProfileHandler(this.driverProfileSvc,this.vehicleSvc,this.documentsSvc)
+    }
 
-    signUpRouter
-    .post("/driver", v.driver.signUp,async(req:Request,res:Response)=>{driverHandler.signUp(req, res)})
+     driver():Router{
+        const driverRouter:Router = Router()
+        driverRouter.use(isAuthorized([role.DRIVER]))
+         .get("/profile", async(req:Request,res:Response)=>{this.driverProfileHandler.getProfile(req, res)})
+         .put("/profile-edit", async(req:Request,res:Response)=>{this.driverProfileHandler.editProfile(req, res)})
+         .put("/change-password", vShared.profile.change_password, async(req:Request,res:Response)=>{this.driverProfileHandler.changePassword(req, res)})
+         .put("/change-profile-photo",vShared.profile.change_profile_photo, async(req:Request,res:Response)=>{this.driverProfileHandler.addProfilePhoto(req, res)})
 
-    driverRouter.use(isAuthorized([role.ADMIN, role.DRIVER]))
-    .get("/", async(req:Request,res:Response)=>{driverHandler.findAllDrivers(req, res)})
-    .get("/:driverId", async(req:Request,res:Response)=>{driverHandler.findDriverById(req, res)})
-    .put("/approve", async(req:Request,res:Response)=>{driverHandler.approveDriver(req, res)})
-    .put("/reject",  async(req:Request,res:Response)=>{driverHandler.rejectDriver(req, res)})
-    .get("/:driverId/approval-status",  async(req:Request,res:Response)=>{driverHandler.getApprovalStatus(req, res)})
+         .post("/documents", v.documents.create,async(req:Request,res:Response)=>{this.driverProfileHandler.addDocuments(req, res)})
+         .get("/documents", async(req:Request,res:Response)=>{this.driverProfileHandler.myDocuments(req, res)})
+         .put("/documents", async(req:Request,res:Response)=>{this.driverProfileHandler.updateDocuments(req, res)})
+         .delete("/documents", async(req:Request,res:Response)=>{this.driverProfileHandler.deleteDocuments(req, res)})
 
-    driverRouter
-    .post("/:driverId/vehicles", v.vehicle.create, isDriverExists,async(req:Request,res:Response)=>{vehicleHandler.addVehicle(req, res)})
-    .get("/:driverId/vehicles", isDriverExists,async(req:Request,res:Response)=>{vehicleHandler.findDriverVehicles(req, res)})
-    .get("/:driverId/vehicles/:vehicleId", isDriverExists,async(req:Request,res:Response)=>{vehicleHandler.findVehicleById(req, res)})
-    .put("/:driverId/vehicles/:vehicleId", isDriverExists,async(req:Request,res:Response)=>{vehicleHandler.updateVehicle(req, res)})
-    .delete("/:driverId/vehicles/:vehicleId", isDriverExists,async(req:Request,res:Response)=>{vehicleHandler.deleteVehicle(req, res)})
+         .get("/vehicles", async(req:Request,res:Response)=>{this.driverProfileHandler.myVehicles(req, res)})
+         .post("/vehicles",v.vehicle.create, async(req:Request,res:Response)=>{this.driverProfileHandler.addVehicles(req, res)})
+         .get("/vehicles/:vehicleId", async(req:Request,res:Response)=>{this.driverProfileHandler.findVehicleById(req, res)})
+         .put("/vehicles/:vehicleId",  async(req:Request,res:Response)=>{this.driverProfileHandler.updateVehicles(req, res)}) 
+         .delete("/vehicles/:vehicleId",  async(req:Request,res:Response)=>{this.driverProfileHandler.deleteVehicles(req, res)})
 
-    driverRouter
-    .post("/:driverId/documents",v.documents.create,isDriverExists,async(req:Request,res:Response)=>{driverDocsHandler.addDriverDocuments(req, res)})
-    .get("/:driverId/documents", isDriverExists,async(req:Request,res:Response)=>{driverDocsHandler.findDriverDocuments(req, res)})
-    .put("/:driverId/documents/:documentsId", isDriverExists,async(req:Request,res:Response)=>{driverDocsHandler.updateDocuments(req, res)})
-    .delete("/:driverId/documents/:documentsId", isDriverExists,async(req:Request,res:Response)=>{driverDocsHandler.deleteDocuments(req, res)})
+         return Router().use("/",driverRouter)
+    }
 
+     admin():Router{
+        const driverRouter:Router = Router()
+        driverRouter.use(isAuthorized([role.ADMIN]))
+        .get("/", async(req:Request,res:Response)=>{this.driverHandler.findAllDrivers(req, res)})
+        .get("/:driverId", async(req:Request,res:Response)=>{this.driverHandler.findDriverById(req, res)})
+        .put("/:driverId/approve", async(req:Request,res:Response)=>{this.driverHandler.approveDriver(req, res)})
+        .put("/:driverId/reject",  async(req:Request,res:Response)=>{this.driverHandler.rejectDriver(req, res)})
+        .get("/:driverId/approval-status",  async(req:Request,res:Response)=>{this.driverHandler.getApprovalStatus(req, res)})
 
-    const routes=Router()
-    routes.use("/drivers",driverRouter)
-    routes.use("/sign-up",signUpRouter)
+        driverRouter
+        .post("/:driverId/vehicles", v.vehicle.create, isDriverExists,async(req:Request,res:Response)=>{this.vehicleHandler.addVehicle(req, res)})
+        .get("/:driverId/vehicles", isDriverExists,async(req:Request,res:Response)=>{this.vehicleHandler.findDriverVehicles(req, res)})
+        .get("/:driverId/vehicles/:vehicleId", isDriverExists,async(req:Request,res:Response)=>{this.vehicleHandler.findVehicleById(req, res)})
+        .put("/:driverId/vehicles/:vehicleId", isDriverExists,async(req:Request,res:Response)=>{this.vehicleHandler.updateVehicle(req, res)})
+        .delete("/:driverId/vehicles/:vehicleId", isDriverExists,async(req:Request,res:Response)=>{this.vehicleHandler.deleteVehicle(req, res)})
 
-
-    return routes
+        driverRouter
+        .post("/:driverId/documents",v.documents.create,isDriverExists,async(req:Request,res:Response)=>{this.documentsHandler.addDriverDocuments(req, res)})
+        .get("/:driverId/documents", isDriverExists,async(req:Request,res:Response)=>{this.documentsHandler.findDriverDocuments(req, res)})
+        .put("/:driverId/documents/:documentsId", isDriverExists,async(req:Request,res:Response)=>{this.documentsHandler.updateDocuments(req, res)})
+        .delete("/:driverId/documents/:documentsId", isDriverExists,async(req:Request,res:Response)=>{this.documentsHandler.deleteDocuments(req, res)})
+        return Router().use("/drivers", driverRouter)
+   }
+    auth():Router{
+        const router:Router = Router()
+        router
+        .post("/login", v.driver.login,async(req:Request,res:Response)=>{this.driverAuthHandler.login(req, res)})
+        .post("/sign-up", v.driver.signUp,async(req:Request,res:Response)=>{this.driverAuthHandler.signUp(req, res)})
+        return Router().use("/driver", router)
+    }
 }
 
 

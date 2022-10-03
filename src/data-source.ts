@@ -1,6 +1,5 @@
 import { DataSource } from "typeorm";
 import { Role } from "./auth/domain/role.model";
-import { User } from "./auth/domain/user.model"; 
 import { UserOTP } from "./auth/domain/otp.model";
 import {singleton} from 'tsyringe'
 import logger from "./shared/errors/logger";
@@ -11,6 +10,8 @@ import { CancelledRide } from "./ride/domain/cancelled-ride-request.model";
 import { RideRequest } from "./ride/domain/ride-request.model";
 import { Ride } from "./ride/domain/ride.model";
 import { RideType } from "./ride/domain/ride-type.model";
+import { Customer } from "./customers/domain/customer.model";
+import { Admin } from "./admin/domain/admin.model";
 
 @singleton()
 export class psqlDB{
@@ -26,7 +27,7 @@ export class psqlDB{
                 database: "fastd_testing",
                 synchronize: true,
                 logging: false,
-                entities: [User, Role, UserOTP, Vehicle, Driver,DriverDocuments,Ride, CancelledRide, RideRequest, RideType],
+                entities: [UserOTP,Role,Admin,Customer,Driver, Vehicle ,DriverDocuments,Ride, CancelledRide, RideRequest, RideType, ],
             })
             psqlDB.DataSrc.initialize()
                 .then(() => {

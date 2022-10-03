@@ -1,12 +1,12 @@
-import { UserOut } from "../user/user.dto"
+
 import { IToken } from "./jwt.dto"
 
 export interface LoginIn{
-    contact:string
+    phone_number:string
     password:string
 }
 
-export interface LoginOut{
-    user:UserOut,
+export interface LoginOut<T>{
+    user:T
     token:IToken
 }

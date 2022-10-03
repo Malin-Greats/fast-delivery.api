@@ -5,20 +5,31 @@ import logger from "../../shared/errors/logger";
 import { NewRide, RideIn } from "../domain/dto/ride.dto";
 import {  Ride } from "../domain/ride.model";
 import { IRideRepository } from "../ports/ride/ride-repository.port";
+import { RideStatus } from "../utils/enums/ride-status.enum";
 
 export class RideRepository implements IRideRepository{
 
     constructor(private ormRepository:Repository<Ride>){}
-    
-    async findOneBy(filter: IObject): Promise<Ride> {
-        let ride;
-        try {
-            ride =await this.ormRepository.findOneOrFail({
-                where: { ...filter.by },} )
-        } catch (error ) {
-            logger.error(error)
-            throw error
+    async hasRideWithStatus(...ridesStatus:RideStatus[]):Promise<any>{
+        let isTrue = false
+        let status:string =''
+        for (let st of ridesStatus){
+           const found= await this.findOneBy({by:{ride_status:st}})
+           if(found!==null && found?.ride_status==st){
+                isTrue = true
+                status =st
+                break
+                
+           }
         }
+        return {"is_true":isTrue, "ride_status":status}
+    }
+    async findOneBy(filter: IObject): Promise<Ride|null> {
+        let ride;
+       
+        ride =await this.ormRepository.findOne({
+            where: { ...filter.by },} )
+    
         return ride
     }
 

@@ -7,6 +7,8 @@ export class DriverDocumentsHandler {
 
     constructor (private _documentsService:IDriverDocumentsService){}
 
+
+
     async addDriverDocuments(req:Request, res:Response){
         const apiResponse = new ApiResponse()
         let driverId=<string>req.params.driverId
@@ -45,7 +47,7 @@ export class DriverDocumentsHandler {
         const apiResponse = new ApiResponse()
         let id=<string>req.params.documentsId
         try {
-            apiResponse.data= await  this._documentsService.deleteDocuments(id)
+            apiResponse.data= await  this._documentsService.deleteDocuments({by:{id}})
             apiResponse.success=true
         } catch (error) {
             if (isError(error)){
@@ -62,7 +64,7 @@ export class DriverDocumentsHandler {
         let id=<string>req.params.documentsId
         const documentsIn = <DriverDocumentsIn> req.body
         try {
-            apiResponse.data= await  this._documentsService.updateDocuments(id,documentsIn )
+            apiResponse.data= await  this._documentsService.updateDocuments({by:{id}},documentsIn )
             apiResponse.success=true
         } catch (error) {
             if (isError(error)){
@@ -73,8 +75,6 @@ export class DriverDocumentsHandler {
         }
          return res.status(200).json(apiResponse)
     }
-
-   
 
     async findAllDocuments(req:Request, res:Response){
         const apiResponse = new ApiResponse()

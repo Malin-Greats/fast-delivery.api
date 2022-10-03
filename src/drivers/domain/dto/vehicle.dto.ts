@@ -20,15 +20,14 @@ export interface VehicleOut{
     // driver: Driver
 }
 
-
-export function NewVehicle({model, make,driver_id, year, color, plate_number}:VehicleIn):Vehicle{
+export function NewVehicle({driver_id, model, make, year, color, plate_number}:VehicleIn):Vehicle{
     const vehicle = new Vehicle()
     vehicle.model=model
     vehicle.make= make
     vehicle.year=year
     vehicle.color=color
-    vehicle.driver_id=driver_id
     vehicle.plate_number=plate_number
+    vehicle.driver_id =driver_id
     return vehicle
 }
 

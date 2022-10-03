@@ -1,4 +1,5 @@
 import { EntityNotFoundError, Repository } from "typeorm";
+import { IObject } from "../../shared/dto/filter-by.dto";
 import AppError from "../../shared/errors/error";
 import logger from "../../shared/errors/logger";
 import { NewVehicle, VehicleIn } from "../domain/dto/vehicle.dto";
@@ -61,7 +62,7 @@ export class VehicleRepository implements IVehicleRepository{
             })
         } catch (error) {
             if (error instanceof EntityNotFoundError){
-                throw new AppError(`The user with id: ${driverId} does not exist!`);
+                throw new AppError(`No vehicles added yet!`);
             }else{
                 logger.error(error)
                 throw error
@@ -89,9 +90,7 @@ export class VehicleRepository implements IVehicleRepository{
     async findAll(): Promise<Vehicle[]> {
         let vehicles!:Vehicle[]
         try {
-            vehicles =await this.ormRepository.find({
-                relations: {driver: true}
-            })
+            vehicles =await this.ormRepository.find()
 
         } catch (error) {
             logger.error(error)
@@ -100,4 +99,22 @@ export class VehicleRepository implements IVehicleRepository{
         return vehicles
     }
 
+    async findBy(filter: IObject): Promise<Vehicle> {
+        let vehicle!:Vehicle;
+            let vehicles!:Vehicle[];
+            try {
+                vehicle =  await this.ormRepository.findOneOrFail({
+                    where: { ...filter.by}
+                })
+            } catch (error) {
+                if (error instanceof EntityNotFoundError){
+                    throw new AppError(`Vehicle doesnt exist !`);
+                }else{
+                    logger.error(error)
+                    throw error
+                }
+            }
+        return  vehicle
+    }
+  
 }
