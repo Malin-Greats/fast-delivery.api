@@ -63,9 +63,9 @@ export class DriverRoutes{
          .get("/profile", async(req:Request,res:Response)=>{this.driverProfileHandler.getProfile(req, res)})
          .put("/profile-edit", async(req:Request,res:Response)=>{this.driverProfileHandler.editProfile(req, res)})
          .put("/change-password", vShared.profile.change_password, async(req:Request,res:Response)=>{this.driverProfileHandler.changePassword(req, res)})
-         .put("/change-profile-photo",vShared.profile.change_profile_photo, async(req:Request,res:Response)=>{this.driverProfileHandler.addProfilePhoto(req, res)})
+         .put("/change-profile-photo", async(req:Request,res:Response)=>{this.driverProfileHandler.addProfilePhoto(req, res)})
 
-         .post("/documents", v.documents.create,async(req:Request,res:Response)=>{this.driverProfileHandler.addDocuments(req, res)})
+         .post("/documents",async(req:Request,res:Response)=>{this.driverProfileHandler.addDocuments(req, res)})
          .get("/documents", async(req:Request,res:Response)=>{this.driverProfileHandler.myDocuments(req, res)})
          .put("/documents", async(req:Request,res:Response)=>{this.driverProfileHandler.updateDocuments(req, res)})
          .delete("/documents", async(req:Request,res:Response)=>{this.driverProfileHandler.deleteDocuments(req, res)})

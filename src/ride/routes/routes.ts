@@ -92,7 +92,7 @@ export class RideRoutes{
 
         const rideTypesRouter= Router()
          rideTypesRouter.use(isAuthorized([role.ADMIN]))
-        .post("/", v.rideTypes.create, async(req:Request,res:Response)=>{this.rideTypeHandler.addRideType(req, res)})
+        .post("/",  async(req:Request,res:Response)=>{this.rideTypeHandler.addRideType(req, res)})
         .get("/",  async(req:Request,res:Response)=>{this.rideTypeHandler.findAllDrivers(req, res)})
         .get("/:rideTypeId",async(req:Request,res:Response)=>{this.rideTypeHandler.findRideTypeById(req, res)})
         .put("/:rideTypeId", v.rideTypes.put, async(req:Request,res:Response)=>{this.rideTypeHandler.updateRideType(req, res)})

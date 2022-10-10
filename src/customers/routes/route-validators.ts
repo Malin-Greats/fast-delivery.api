@@ -38,9 +38,9 @@ export const CustomerRouteValidators={
         ],
        edit:[
        ],
-       change_profile_photo:[
-            body("profile_photo").notEmpty().withMessage("profile_photo is required"),
-       ]
+    //    change_profile_photo:[
+    //         body("profile_photo").notEmpty().withMessage("profile_photo is required"),
+    //    ]
     }
 }
 

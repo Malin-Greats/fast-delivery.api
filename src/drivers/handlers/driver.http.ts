@@ -78,6 +78,7 @@ export class DriverHandler{
         }
          return res.status(201).json(apiResponse)
     }
+
     async rejectDriver (req:Request, res:Response){
         const apiResponse = new ApiResponse()
         let driver_id=<string>req.params.driverId

@@ -63,9 +63,9 @@ export class  Ride extends BaseEntity{
     @JoinColumn({name:"customer_id"})
     customer!: Customer
 
-    // @ManyToOne(() => Driver, (driver) => driver.rides)
-    // @JoinColumn({name:"driver_id"})
-    // driver!: Driver
+    @ManyToOne(() => Driver, (driver) => driver.rides)
+    @JoinColumn({name:"driver_id"})
+    driver!: Driver
 
     @ManyToOne(type => RideRequest,) @JoinColumn({name:"request_id"})
     request!:RideRequest

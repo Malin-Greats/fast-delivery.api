@@ -4,6 +4,7 @@ import { Hashing as hash, verifyPassword } from "../../shared/hashing"
 import { ICustomerRepo } from "../ports/customer-repo.port"
 import AppError from "../../shared/errors/error"
 import { IUserProfileSvc } from "../../shared/ports/profile.port"
+import { ProfilePhotoIn, ProfilePhotoOut } from "../../shared/dto/profile_photo.dto"
 
 export class CustomerProfileSvc  implements IUserProfileSvc<CustomerProfile> {
 
@@ -20,7 +21,7 @@ export class CustomerProfileSvc  implements IUserProfileSvc<CustomerProfile> {
         const updateProfile= toCustomerProfile(customer)
         return updateProfile
     }
-    
+
     async changePassword(userId:string, pwdIn: ChangePasswordIn): Promise<string> {
         const customer =await this._customerRepo.findById(userId)
         let message!:string
@@ -39,15 +40,16 @@ export class CustomerProfileSvc  implements IUserProfileSvc<CustomerProfile> {
         return message
     }
 
-    async addProfilePhoto(userId:string,photo:{profile_photo:string}):Promise<string | undefined>{
+    async addProfilePhoto(userId:string,{profile_photo}:ProfilePhotoIn):Promise<ProfilePhotoOut>{
         let customer =await this._customerRepo.findById(userId)
+        const profilePhoto =<ProfilePhotoOut> {new_profile_photo:profile_photo, old_profile_photo:customer.profile_photo}
         try {
-            customer =await this._customerRepo.update(customer.id, {by:photo})
+            customer =await this._customerRepo.update(customer.id, {by:{profile_photo}})
 
         } catch (error) {
             const err= new AppError("SERVER_ERROR:Error occured while updating ")
         }
-        return  customer.profile_photo
+        return  profilePhoto
     }
 
 }

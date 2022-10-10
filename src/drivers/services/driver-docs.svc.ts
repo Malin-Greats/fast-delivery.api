@@ -18,7 +18,7 @@ export class DriverDocumentsService  implements IDriverDocumentsService{
         const documentsOut = toDriverDocumentsOut(documents)
         return documentsOut
     }
-    async updateDocuments(filter: IObject, documentsIn: DriverDocumentsIn): Promise<DriverDocumentsOut> {
+    async updateDocuments(filter: IObject, documentsIn: IObject): Promise<DriverDocumentsOut> {
         const documents = await this._documentsRepository.update(filter, documentsIn)
         const documentsOut = toDriverDocumentsOut(documents)
         return documentsOut

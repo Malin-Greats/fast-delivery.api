@@ -9,7 +9,7 @@ import { CustomerRoutes } from "../customers/routes/routes"
 import { psqlDB } from "../data-source"
 import { DriverRoutes } from "../drivers/routes/routes"
 import { RideRoutes } from "../ride/routes/routes"
-
+import { imagesRouter as images } from "../shared/multer/image-uploads"
 export function AppRoutes(){
     const appRouter = Router()
 
@@ -27,6 +27,7 @@ export function AppRoutes(){
     const authRouter = Router()
     const ridesRouter=Router()
     const adminRouter = Router()
+    const imagesRouter = Router()
     const driverRouter = Router()
     const customersRouter=Router()
 
@@ -56,12 +57,16 @@ export function AppRoutes(){
         "/",
         rides.rides()
         )
+    imagesRouter.use(
+        "/images",
+        images()
+    )
 
     indexRouter.get("",(req:Request, res:Response)=>{
         return res.status(200).send("Welcome to Fast Delivery RESTful API.!")
     } )
 
-    appRouter.use(adminRouter, ridesRouter, customersRouter,driverRouter, indexRouter, authRouter)
+    appRouter.use(adminRouter, ridesRouter, customersRouter,driverRouter, indexRouter, authRouter, imagesRouter)
     return appRouter
 
 }
