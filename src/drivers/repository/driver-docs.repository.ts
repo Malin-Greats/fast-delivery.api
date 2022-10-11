@@ -95,7 +95,6 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
             }else{
                 documents =await this.ormRepository.find()
             }
-            
 
         } catch (error) {
             logger.error(error)

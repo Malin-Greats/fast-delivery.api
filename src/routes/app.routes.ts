@@ -66,7 +66,39 @@ export function AppRoutes(){
         return res.status(200).send("Welcome to Fast Delivery RESTful API.!")
     } )
     .post("/success",(req:Request, res:Response)=>{
-        return res.status(200).send()
+        return res.status(200).send(`
+        <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </head>
+        <body
+          style="
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+          "
+        >
+          <button
+          onclick="sendDataToReactNativeApp()"
+            style="
+              padding: 20;
+              width: 200;
+              font-size: 20;
+              color: white;
+              background-color: #6751ff;
+            "
+          >
+            Send Data To React Native App
+          </button>
+          <script>
+            const sendDataToReactNativeApp = async () => {
+              window.ReactNativeWebView.postMessage('Data from WebView / Website');
+            };
+          </script>
+        </body>
+        <html>
+        `)
     } )
     .post("/error",(req:Request, res:Response)=>{
         return res.status(200).send("Error")
