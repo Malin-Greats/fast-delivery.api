@@ -65,7 +65,7 @@ export function AppRoutes(){
     indexRouter.get("",(req:Request, res:Response)=>{
         return res.status(200).send("Welcome to Fast Delivery RESTful API.!")
     } )
-    .post("/success",(req:Request, res:Response)=>{
+    .get("/success",(req:Request, res:Response)=>{
         return res.status(200).send(`
         <html>
         <head>
@@ -100,7 +100,7 @@ export function AppRoutes(){
         <html>
         `)
     } )
-    .post("/error",(req:Request, res:Response)=>{
+    .get("/error",(req:Request, res:Response)=>{
         return res.status(200).send("Error")
     } )
 
