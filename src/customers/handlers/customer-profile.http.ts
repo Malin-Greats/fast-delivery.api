@@ -7,7 +7,7 @@ import { getPayload } from "../../shared/http/get-payload"
 import { Payload } from "../../shared/jwt.util"
 import { ChangePasswordIn } from "../../auth/domain/dto/auth/change-pwd.dto"
 import { validationResult } from "express-validator"
-import { profileUrl, UploadProfile, UPLOAD_PROFILE_PATH } from "../../shared/multer/image-uploads"
+import { EnforceHttpUrl, profileUrl, UploadProfile, UPLOAD_PROFILE_PATH } from "../../shared/multer/image-uploads"
 import fs from 'fs'
 import logger from "../../shared/errors/logger"
 export class CustomerProfileHandler{
@@ -19,8 +19,9 @@ export class CustomerProfileHandler{
         const payload = <Payload>await getPayload(req, res)
 
         try {
-            apiResponse.data= await this._customerProfileSvc.getProfile(payload.userId)
-            apiResponse.data.profile_photo =profileUrl+apiResponse.data.profile_photo
+            const data = await this._customerProfileSvc.getProfile(payload.userId)
+            apiResponse.data = data
+            apiResponse.data.profile_photo =  EnforceHttpUrl(req, data.profile_photo, profileUrl)
             apiResponse.success=true
         } catch (error) {
             if (isError(error)){
@@ -123,4 +124,6 @@ export class CustomerProfileHandler{
         }
         return res.status(201).json(apiResponse)
     }
+
+   
 }

@@ -65,6 +65,12 @@ export function AppRoutes(){
     indexRouter.get("",(req:Request, res:Response)=>{
         return res.status(200).send("Welcome to Fast Delivery RESTful API.!")
     } )
+    .post("/success",(req:Request, res:Response)=>{
+        return res.status(200).send("Success")
+    } )
+    .post("/error",(req:Request, res:Response)=>{
+        return res.status(200).send("Error")
+    } )
 
     appRouter.use(adminRouter, ridesRouter, customersRouter,driverRouter, indexRouter, authRouter, imagesRouter)
     return appRouter

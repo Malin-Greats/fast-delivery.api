@@ -65,7 +65,7 @@ export class DriverRoutes{
          .put("/change-password", vShared.profile.change_password, async(req:Request,res:Response)=>{this.driverProfileHandler.changePassword(req, res)})
          .put("/change-profile-photo", async(req:Request,res:Response)=>{this.driverProfileHandler.addProfilePhoto(req, res)})
 
-         .post("/documents",async(req:Request,res:Response)=>{this.driverProfileHandler.addDocuments(req, res)})
+         .post("/documents",async(req:Request,res:Response)=>{this.documentsHandler.addDocuments(req, res)})
          .get("/documents", async(req:Request,res:Response)=>{this.driverProfileHandler.myDocuments(req, res)})
          .put("/documents", async(req:Request,res:Response)=>{this.driverProfileHandler.updateDocuments(req, res)})
          .delete("/documents", async(req:Request,res:Response)=>{this.driverProfileHandler.deleteDocuments(req, res)})
@@ -96,8 +96,8 @@ export class DriverRoutes{
         .delete("/:driverId/vehicles/:vehicleId", isDriverExists,async(req:Request,res:Response)=>{this.vehicleHandler.deleteVehicle(req, res)})
 
         driverRouter
-        .post("/:driverId/documents",v.documents.create,isDriverExists,async(req:Request,res:Response)=>{this.documentsHandler.addDriverDocuments(req, res)})
-        .get("/:driverId/documents", isDriverExists,async(req:Request,res:Response)=>{this.documentsHandler.findDriverDocuments(req, res)})
+        .post("/:driverId/documents",v.documents.create,isDriverExists,async(req:Request,res:Response)=>{this.documentsHandler.addDocuments(req, res)})
+        .get("/:driverId/documents", isDriverExists,async(req:Request,res:Response)=>{this.documentsHandler.findDocuments(req, res)})
         .put("/:driverId/documents/:documentsId", isDriverExists,async(req:Request,res:Response)=>{this.documentsHandler.updateDocuments(req, res)})
         .delete("/:driverId/documents/:documentsId", isDriverExists,async(req:Request,res:Response)=>{this.documentsHandler.deleteDocuments(req, res)})
         return Router().use("/drivers", driverRouter)

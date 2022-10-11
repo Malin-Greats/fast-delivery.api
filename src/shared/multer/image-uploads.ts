@@ -5,15 +5,18 @@ import * as path from 'path'
 import AppError from '../errors/error';
 import logger from '../errors/logger';
 
+
 export const UPLOAD_PROFILE_PATH = 'public/images/profile';
 export const UPLOAD_VEHICLE_PATH = 'public/images/vehicle';
 export const UPLOAD_DOCS_PATH = 'public/images/documents';
 export const UPLOAD_RIDE_TYPES_PATH = 'public/images/ride_types';
 
-export const  profileUrl='http://localhost:5000/images/profile/'
-export const  vehicleImgUrl='http://localhost:5000/images/vehicles/'
-export const  rideTypesImgUrl='http://localhost:5000/images/ride-types/'
-export const  driverDocumentsImgUrl='http://localhost:5000/images/documents/'
+export const TEMP_DIR ="public/temp"
+
+export const  profileUrl='images/profile/'
+export const  vehicleImgUrl='images/vehicles/'
+export const  rideTypesImgUrl='images/ride-types/'
+export const  driverDocumentsImgUrl='images/documents/'
 
 const storageProfile = multer.diskStorage({
   destination: function (req:Request, file, cb) {
@@ -24,6 +27,17 @@ const storageProfile = multer.diskStorage({
     cb(null, `${file.fieldname }-${uniqueSuffix}`)
   }
 })
+
+const storageTemp = multer.diskStorage({
+  destination: function (req:Request, file, cb) {
+    cb(null, TEMP_DIR)
+  },
+  filename: function (req,file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, `${file.fieldname }-${uniqueSuffix}`)
+  }
+})
+
 
 
 const storageRideTypes = multer.diskStorage({
@@ -117,7 +131,27 @@ export function removeFile(path:string):void{
       })
   }
 }
+
+export function moveFile(from:string, to:string ):void{
+  if (fs.existsSync(from)){
+    fs.rename(from, to, (err) => {
+      if (err) throw err;
+      logger.info('Documents Saved!');
+    });
+    removeFile(from)
+  }
+}
+
+export function  EnforceHttpUrl(req:Request, data:any,url:string ){
+  const baseUrl = req.protocol+'://'+req.hostname+':'+process.env.PORT+"/"
+  if (data && data!==null){
+      return baseUrl+url+data
+  }
+  return data
+}
+
 export const UploadProfile = multer({ storage: storageProfile })
 export const UploadDocuments = multer({ storage: storageDocuments })
 export const UploadVehicle = multer({ storage: storageVehicle })
 export const UploadRideTypes = multer({ storage: storageRideTypes })
+export const UploadToTemp = multer({ storage: storageTemp })

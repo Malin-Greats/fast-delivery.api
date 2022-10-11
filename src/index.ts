@@ -8,7 +8,7 @@ import { psqlDB } from "./data-source";
 import { AppRoutes } from "./routes/app.routes";
 import  cors from 'cors'
 import path from "path";
-import  bodyParser from 'body-parser'
+
 dotenv.config();
 
 var corsOptions = {
