@@ -7,21 +7,27 @@ import "reflect-metadata";
 import { psqlDB } from "./data-source";
 import { AppRoutes } from "./routes/app.routes";
 import  cors from 'cors'
+import path from "path";
 
 dotenv.config();
+
 var corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }
+
+ 
+
 psqlDB.init()
 const app = express()
 app.use(helmet());
 app.use(cors(corsOptions) )
 app.use(express.json())
-app.use(express.static('public'));
-
+app.use(express.urlencoded({extended: true}));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('dev'))
-
 app.use(AppRoutes())
 
 app.listen(process.env.PORT||3000, ()=>{

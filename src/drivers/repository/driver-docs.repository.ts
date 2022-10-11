@@ -72,9 +72,9 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
         }
         return  documents
     }
-    async update(filter: IObject, documentsIn: DriverDocumentsIn): Promise<DriverDocuments> {
+    async update(filter: IObject, documentsIn: IObject): Promise<DriverDocuments> {
             const documents = await this.findBy(filter);
-            Object.assign(documents, documentsIn);
+            Object.assign(documents, documentsIn.by);
             let updateDocuments!:DriverDocuments
             try {
                 updateDocuments=await this.ormRepository.save(documents);
@@ -85,10 +85,16 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
             return  updateDocuments
     }
 
-    async findAll(): Promise<DriverDocuments[]> {
+    async findAll(filter?: IObject): Promise<DriverDocuments[]> {
         let documents!:DriverDocuments[]
         try {
-            documents =await this.ormRepository.find()
+            if(filter){
+                documents =await this.ormRepository.find({
+                    where:filter.by
+                })
+            }else{
+                documents =await this.ormRepository.find()
+            }
 
         } catch (error) {
             logger.error(error)

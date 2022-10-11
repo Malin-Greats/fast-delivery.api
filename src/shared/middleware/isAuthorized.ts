@@ -8,7 +8,8 @@ export const isAuthorized=(validRoles:role[])=>async (req:Request,res:Response,n
     const apiResponse = new ApiResponse()
     const authHeaderToken =req.get('Authorization')
      if(!authHeaderToken){
-        return res.sendStatus(401)
+        apiResponse.errors = new AppError("Unauthorized access.")
+        return res.status(401).json(apiResponse)
      }
 
     let payload:IJWTPayload ;

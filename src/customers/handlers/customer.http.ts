@@ -102,5 +102,4 @@ export class CustomerHandler{
        }
          return res.status(200).json(apiResponse)
     }
-   
 }

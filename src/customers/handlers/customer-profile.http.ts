@@ -7,7 +7,9 @@ import { getPayload } from "../../shared/http/get-payload"
 import { Payload } from "../../shared/jwt.util"
 import { ChangePasswordIn } from "../../auth/domain/dto/auth/change-pwd.dto"
 import { validationResult } from "express-validator"
-
+import { EnforceHttpUrl, profileUrl, UploadProfile, UPLOAD_PROFILE_PATH } from "../../shared/multer/image-uploads"
+import fs from 'fs'
+import logger from "../../shared/errors/logger"
 export class CustomerProfileHandler{
 
     constructor(private _customerProfileSvc:IUserProfileSvc<CustomerProfile>){}
@@ -17,7 +19,9 @@ export class CustomerProfileHandler{
         const payload = <Payload>await getPayload(req, res)
 
         try {
-            apiResponse.data= await this._customerProfileSvc.getProfile(payload.userId)
+            const data = await this._customerProfileSvc.getProfile(payload.userId)
+            apiResponse.data = data
+            apiResponse.data.profile_photo =  EnforceHttpUrl(req, data.profile_photo, profileUrl)
             apiResponse.success=true
         } catch (error) {
             if (isError(error)){
@@ -56,20 +60,48 @@ export class CustomerProfileHandler{
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
+        UploadProfile.single("profile_photo")
+        ( req,res, async (err)=>{
+            if(err){
+                apiResponse.errors = err
+                return res.status(500).json(apiResponse)
+            }else{
+                const payload = <Payload>await getPayload(req, res)
+                const file = req.file?.filename
+                let requestIn:{profile_photo:string}
+                if(file){
+                    requestIn = {profile_photo: file}
+                    try {
+                        const {old_profile_photo, new_profile_photo}=await this._customerProfileSvc.addProfilePhoto(payload.userId, requestIn)
+                        const filePath = `${UPLOAD_PROFILE_PATH}/${old_profile_photo}`
+                        if (fs.existsSync(filePath)){
+                            fs.unlink(filePath, function (err) {
+                                if (err) {
+                                    apiResponse.errors= new AppError("Old file does't exist.")
+                                    return res.status(400).json(apiResponse)
+                                };
+                                // if no error, file has been deleted successfully
+                                logger.info(`Old profile photo with id: ${old_profile_photo}  deleted!`);
+                            })
+                        }else{
+                            apiResponse.errors= new AppError("Old file does't exist.")
+                            return res.status(400).json(apiResponse)
+                        }
+                        apiResponse.data ={profile_photo:profileUrl+new_profile_photo}
+                        apiResponse.success=true
 
-        const payload = <Payload>await getPayload(req, res)
-        const requestIn = <{profile_photo:string}>req.body
-        try {
-            apiResponse.data=await this._customerProfileSvc.addProfilePhoto(payload.userId, requestIn)
-            apiResponse.success=true
-        } catch (error) {
-            if (isError(error)){
-                apiResponse.errors= new AppError(error.message,error.detail, 400)
-                 return res.status(apiResponse.errors.statusCode).json(apiResponse)
-             }
-             return res.status(500).json(error)
-        }
-         return res.status(201).json(apiResponse)
+                    } catch (error) {
+                        if (isError(error)){
+                            apiResponse.errors= new AppError(error.message,error.detail, 400)
+                            return res.status(apiResponse.errors.statusCode).json(apiResponse)
+                        }
+                        return res.status(500).json(error)
+                    }
+                    return res.status(201).json(apiResponse)
+                }
+            }
+        })
+        return
     }
 
     async changePassword(req:Request, res:Response){
@@ -93,6 +125,5 @@ export class CustomerProfileHandler{
         return res.status(201).json(apiResponse)
     }
 
-  
    
 }

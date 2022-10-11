@@ -25,7 +25,7 @@ export class CustomerRoutes{
          this.customerRepo = new CustomerRepo(psqlDB.DataSrc.getRepository(Customer))
          this.customerSvc = new CustomerSvc(this.customerRepo, this._roleRepository)
          this.customerProfileSvc = new CustomerProfileSvc(this.customerRepo)
-        this. customerAuthSvc= new CustomerAuthSvc(this.customerRepo,this._roleRepository)
+         this. customerAuthSvc= new CustomerAuthSvc(this.customerRepo,this._roleRepository)
          this.customerHandler = new CustomerHandler(this.customerSvc)
          this.customerProfileHandler = new CustomerProfileHandler(this.customerProfileSvc)
          this.customerAuthHandler = new CustomerAuthHandler(this.customerAuthSvc)
@@ -34,10 +34,14 @@ export class CustomerRoutes{
     customer(){
         const profileRouter= Router()
         profileRouter.use(isAuthorized([role.CUSTOMER]))
-        .get("/profile", async(req:Request,res:Response)=>{this.customerProfileHandler.getProfile(req, res)})
-        .put("/profile-edit",sharedV.profile.edit, async(req:Request,res:Response)=>{this.customerProfileHandler.editProfile(req, res)})
-        .put("/change-password",v.profile.change_password,  async(req:Request,res:Response)=>{this.customerProfileHandler.changePassword(req, res)})
-        .put("/change-profile-photo",v.profile.change_profile_photo, async(req:Request,res:Response)=>{this.customerProfileHandler.addProfilePhoto(req, res)})
+        .get("/profile",
+            async(req:Request,res:Response)=>{this.customerProfileHandler.getProfile(req, res)})
+        .put("/profile-edit",sharedV.profile.edit,
+            async(req:Request,res:Response)=>{this.customerProfileHandler.editProfile(req, res)})
+        .put("/change-password",v.profile.change_password,
+            async(req:Request,res:Response)=>{this.customerProfileHandler.changePassword(req, res)})
+        .put("/change-profile-photo",
+            async(req:Request,res:Response)=>{this.customerProfileHandler.addProfilePhoto(req, res)})
         return profileRouter
     }
     admin(){
@@ -48,7 +52,7 @@ export class CustomerRoutes{
         .get("/:customerId", async(req:Request,res:Response)=>{this.customerHandler.findCustomerById(req, res)})
         .put("/:customerId",  async(req:Request,res:Response)=>{this.customerHandler.updateCustomer(req, res)})
         .delete("/:customerId",  async(req:Request,res:Response)=>{this.customerHandler.deleteCustomer(req, res)})
-        return Router().use("/customers", customerRouter) 
+        return Router().use("/customers", customerRouter)
     }
     auth(){
         const authRouter= Router()

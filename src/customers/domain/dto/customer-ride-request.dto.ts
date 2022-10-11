@@ -3,7 +3,6 @@ import { RideType } from "../../../ride/domain/ride-type.model"
 import { RideRequestStatus } from "../../../ride/utils/enums/request-status.enum"
 import { Place as Location } from "../../../shared/dto/location.dto"
 import { TravelInfo } from "../../../shared/dto/travel-info.dto"
-
 export interface CustomerRideRequest{
     id:string
     pick_from:Location

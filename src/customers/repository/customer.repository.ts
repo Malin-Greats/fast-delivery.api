@@ -41,9 +41,9 @@ export class CustomerRepo implements ICustomerRepo{
 
     async findBy(filter: IObject): Promise<Customer> {
         let customer!:Customer;
-        let filterBy= filter.by
+        console.log(filter.by)
         customer =  await this.ormRepository.findOneOrFail({
-                where: { ...filterBy}
+                where: { ...filter.by}
             })
         return  customer
     }

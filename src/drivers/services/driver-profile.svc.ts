@@ -4,6 +4,7 @@ import AppError from "../../shared/errors/error"
 import { IUserProfileSvc } from "../../shared/ports/profile.port"
 import { DriverProfile, toDriverProfile } from "../domain/dto/driver-profile.dto"
 import { IDriverRepository } from "../ports/driver-repository.port"
+import { ProfilePhotoIn, ProfilePhotoOut } from "../../shared/dto/profile_photo.dto"
 
 export class DriverProfileSvc implements IUserProfileSvc<DriverProfile> {
 
@@ -39,15 +40,16 @@ export class DriverProfileSvc implements IUserProfileSvc<DriverProfile> {
         return message
     }
 
-    async addProfilePhoto(userId:string,photo:{profile_photo:string}):Promise<string | undefined>{
-        let user =await this._driverRepo.findById(userId)
+    async addProfilePhoto(userId:string,{profile_photo}:ProfilePhotoIn):Promise<ProfilePhotoOut>{
+        let customer =await this._driverRepo.findById(userId)
+        const profilePhoto =<ProfilePhotoOut> {new_profile_photo:profile_photo, old_profile_photo:customer.profile_photo}
         try {
-            user =await this._driverRepo.update(user.id, {by:photo})
+            customer =await this._driverRepo.update(customer.id, {by:{profile_photo}})
 
         } catch (error) {
             const err= new AppError("SERVER_ERROR:Error occured while updating ")
         }
-        return  user.profile_photo
+        return  profilePhoto
     }
 
 }
