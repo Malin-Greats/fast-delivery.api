@@ -66,7 +66,7 @@ export function AppRoutes(){
         return res.status(200).send("Welcome to Fast Delivery RESTful API.!")
     } )
     .post("/success",(req:Request, res:Response)=>{
-        return res.status(200).send("Success")
+        return res.status(200).send()
     } )
     .post("/error",(req:Request, res:Response)=>{
         return res.status(200).send("Error")

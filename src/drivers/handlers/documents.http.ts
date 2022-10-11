@@ -21,12 +21,14 @@ export class DriverDocumentsHandler {
             }else{
                 if(req.files){
                     try {
-                        const driverId = <string>await this.getDriverId(req, res)
-                        const documentsIn =  await documentsInFunc(req, driverId)
-                        this.moveFiles(documentsIn, TEMP_DIR, UPLOAD_DOCS_PATH)
-                        const data= await  this._documentsService.addDocuments(documentsIn )
-                        apiResponse.data =await documentsOutFunc(data)
-                        apiResponse.success=true
+                        const {driver_id} = await this.getDriverId(req, res)
+                        if(driver_id){
+                            const documentsIn =  await documentsInFunc(req, driver_id)
+                            this.moveFiles(documentsIn, TEMP_DIR, UPLOAD_DOCS_PATH)
+                            const data= await  this._documentsService.addDocuments(documentsIn )
+                            apiResponse.data =await documentsOutFunc(data)
+                            apiResponse.success=true
+                        }
                     } catch (error) {
                         if (isError(error)){
                             apiResponse.errors= new AppError(error.message,error.detail, 400)
@@ -44,10 +46,12 @@ export class DriverDocumentsHandler {
     async findDocuments(req:Request, res:Response){
         const apiResponse = new ApiResponse()
         try {
-            const driverId = <string>await this.getDriverId(req, res)
-            const data= await  this._documentsService.findDocumentsByDriverId(driverId)
-            apiResponse.data =await documentsOutFunc(data)
-            apiResponse.success=true
+            const {driver_id} = await this.getDriverId(req, res)
+            if(driver_id){
+                const data= await  this._documentsService.findDocumentsByDriverId(driver_id)
+                apiResponse.data =await documentsOutFunc(data)
+                apiResponse.success=true
+            }
         } catch (error) {
             if (isError(error)){
                 apiResponse.errors= new AppError(error.message,error.detail, 400)
@@ -62,7 +66,7 @@ export class DriverDocumentsHandler {
         const apiResponse = new ApiResponse()
         let id=<string>req.params.documentsId
         try {
-            const driver_id = this.getDriverId(req, res)
+            const {driver_id} = await this.getDriverId(req, res)
             const data= await  this._documentsService.deleteDocuments({by:{id, driver_id}})
             apiResponse.data =await documentsOutFunc(data)
             apiResponse.success=true
@@ -80,9 +84,9 @@ export class DriverDocumentsHandler {
         const apiResponse = new ApiResponse()
         const documentsIn = <DriverDocumentsIn> req.body
         try {
-            const driverId = <string>await this.getDriverId(req, res)
+            const {driver_id} = await this.getDriverId(req, res)
             const requestIn = await documentsInUpdateFunc(req)
-            const data=  await this._documentsService.updateDocuments({by:{driver_id:driverId}},{ by:requestIn})
+            const data=  await this._documentsService.updateDocuments({by:{driver_id}},{ by:requestIn})
             apiResponse.data =await documentsOutFunc(data)
             apiResponse.success=true
         } catch (error) {
@@ -98,11 +102,18 @@ export class DriverDocumentsHandler {
     async findAllDocuments(req:Request, res:Response){
         const apiResponse = new ApiResponse()
         try {
-            const driver_id = this.getDriverId(req, res)
-            if (driver_id===null){
-
+            const {driver_id, role}= await this.getDriverId(req, res)
+            let data!:DriverDocumentsOut[];
+            if (role=="driver"){
+                data= await  this._documentsService.findAllDocuments({by:{driver_id}})
+            }else if (role=="admin"){
+                let data:DriverDocumentsOut[]
+                if (driver_id===null){
+                    data= await  this._documentsService.findAllDocuments()
+                }else{
+                    data =await this._documentsService.findAllDocuments({by:{driver_id}})
+                }
             }
-            const data= await  this._documentsService.findAllDocuments()
             let docs:DriverDocumentsOut[] = []
             for (let doc of data){
                 const docOut =await documentsOutFunc(doc)
@@ -120,7 +131,7 @@ export class DriverDocumentsHandler {
          return res.status(200).json(apiResponse)
     }
 
-    private async getDriverId(req:Request, res:Response){
+    private async getDriverId(req:Request, res:Response):Promise<{driver_id:string|null, role:string|null}>{
         const {userId, role} = <Payload>await getPayload(req, res)
         let driver_id!: string;
         switch(role){
@@ -131,9 +142,9 @@ export class DriverDocumentsHandler {
                 driver_id = userId
                 break;
             default:
-                return null
+                return{driver_id:null, role:null}
         }
-        return driver_id
+        return {driver_id, role}
     }
 
     private moveFiles(docs:DriverDocumentsIn, from:string, to:string){

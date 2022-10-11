@@ -33,8 +33,8 @@ export class DriverDocumentsService  implements IDriverDocumentsService{
         const documentsOut = toDriverDocumentsOut(documents)
        return documentsOut
     }
-    async findAllDocuments(): Promise<DriverDocumentsOut[]> {
-        const documents= await this._documentsRepository.findAll()
+    async findAllDocuments(filter?: IObject): Promise<DriverDocumentsOut[]> {
+        const documents= await this._documentsRepository.findAll(filter)
         const docsOut:DriverDocumentsOut[]=[]
         for (let doc of documents){
             const documentsOut = toDriverDocumentsOut(doc)

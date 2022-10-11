@@ -8,6 +8,6 @@ export interface IDriverDocumentsRepository {
     findByDriverId(driverId:string):Promise<DriverDocuments>
     findById(id:string):Promise<DriverDocuments>
     update(filter: IObject, documentsIn:IObject):Promise<DriverDocuments>
-    findAll():Promise<DriverDocuments[]>
+    findAll(filter?: IObject):Promise<DriverDocuments[]>
     findBy(filter: IObject):Promise<DriverDocuments>
 }

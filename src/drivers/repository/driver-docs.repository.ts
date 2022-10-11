@@ -85,10 +85,17 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
             return  updateDocuments
     }
 
-    async findAll(): Promise<DriverDocuments[]> {
+    async findAll(filter?: IObject): Promise<DriverDocuments[]> {
         let documents!:DriverDocuments[]
         try {
-            documents =await this.ormRepository.find()
+            if(filter){
+                documents =await this.ormRepository.find({
+                    where:filter.by
+                })
+            }else{
+                documents =await this.ormRepository.find()
+            }
+            
 
         } catch (error) {
             logger.error(error)
