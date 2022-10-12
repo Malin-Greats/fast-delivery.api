@@ -83,17 +83,17 @@ export function AppRoutes(){
           onclick="sendDataToReactNativeApp()"
             style="
               padding: 20;
-              width: 200;
+              width: 300;
               font-size: 20;
               color: white;
               background-color: #6751ff;
             "
           >
-            Send Data To React Native App
+            Continue with Ride Request....
           </button>
           <script>
             const sendDataToReactNativeApp = async () => {
-              window.ReactNativeWebView.postMessage('Data from WebView / Website');
+              window.ReactNativeWebView.postMessage('Success');
             };
           </script>
         </body>
