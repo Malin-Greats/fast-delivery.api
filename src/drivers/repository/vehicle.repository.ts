@@ -19,7 +19,13 @@ export class VehicleRepository implements IVehicleRepository{
        try {
         savedVehicle=await this.ormRepository.save(vehicle)
        } catch (error ) {
-           logger.error(error)
+            const {code} =<{code:string}>error
+            let  err =error as AppError
+            if (code==="23505"){
+                throw new AppError("Vehicle already exist ", err.detail)
+            }if(code ==="23503"){
+                throw new AppError("User doesn't exist ", err.detail)
+            }
            throw error
        }
        return savedVehicle

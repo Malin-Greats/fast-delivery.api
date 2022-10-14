@@ -5,7 +5,6 @@ import * as path from 'path'
 import AppError from '../errors/error';
 import logger from '../errors/logger';
 
-
 export const UPLOAD_PROFILE_PATH = 'public/images/profile';
 export const UPLOAD_VEHICLE_PATH = 'public/images/vehicle';
 export const UPLOAD_DOCS_PATH = 'public/images/documents';
@@ -37,7 +36,6 @@ const storageTemp = multer.diskStorage({
     cb(null, `${file.fieldname }-${uniqueSuffix}`)
   }
 })
-
 
 
 const storageRideTypes = multer.diskStorage({
@@ -100,10 +98,11 @@ const storageVehicle = multer.diskStorage({
           return res.status(500).json (error)
         }
     })
-    .get("/documents/:imageId",async (req:Request, res:Response)=>{
+    .get("/documents/:userId/:imageId",async (req:Request, res:Response)=>{
+      const userId =req.params.userId
         const id =req.params.imageId
         try {
-          fs.createReadStream(path.join(UPLOAD_DOCS_PATH,id )).pipe(res);
+          fs.createReadStream(path.join(UPLOAD_DOCS_PATH,userId,id )).pipe(res);
         } catch (error) {
           return res.status(500).json (error)
         }

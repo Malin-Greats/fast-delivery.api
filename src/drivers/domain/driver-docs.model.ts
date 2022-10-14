@@ -33,4 +33,8 @@ export class DriverDocuments extends BaseEntity{
 
     @Column({unique:true})
     driver_id!:string
+
+    @OneToOne(() => Driver,(driver) => driver.documents, {onDelete:"CASCADE"})
+    @JoinColumn({name:"driver_id"})
+    driver!: Driver
 }
