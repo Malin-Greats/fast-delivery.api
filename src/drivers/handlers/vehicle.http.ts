@@ -86,7 +86,7 @@ export class VehicleHandler {
              }
              return res.status(500).json(error)
         }
-         return res.status(200).json(apiResponse)
+         return res.status(204).json(apiResponse)
     }
 
     async findVehicleById(req:Request, res:Response){

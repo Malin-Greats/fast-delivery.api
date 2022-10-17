@@ -21,7 +21,7 @@ export class DriverDocumentsRepository implements IDriverDocumentsRepository{
        } catch (error ) {
             const {code} =error as {code:string}
             if (code==="23505"){
-                throw new AppError("Aready upload documents")
+                throw new AppError("Already uploaded documents. You can only update the existing documents")
             }
             throw error
        }

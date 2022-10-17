@@ -45,7 +45,7 @@ export class  RideRequest extends BaseEntity{
     @CreateDateColumn()
     created_at!:Date
 
-    @ManyToOne(() => Customer, (customer) => customer.ride_requests)
+    @ManyToOne(() => Customer,(customer) => customer.ride_requests, {onDelete:"CASCADE"})
     @JoinColumn({name:"customer_id"})
     customer!: Customer
 

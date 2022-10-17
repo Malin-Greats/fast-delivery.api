@@ -18,6 +18,11 @@ export class CustomerRepo implements ICustomerRepo{
             const user = await this.ormRepository.create(newCustomer);
             saved=await this.ormRepository.save(user)
         } catch (error ) {
+            const {code} =<{code:string}>error
+            if (code==="23505"){
+                let  err =error as AppError
+                throw new AppError("User already exist: ", err.detail)
+            }
             throw error
         }
         return saved
@@ -31,7 +36,7 @@ export class CustomerRepo implements ICustomerRepo{
             })
         } catch (error) {
             if (error instanceof EntityNotFoundError){
-                throw new AppError(`The customer with id: ${id} does not exist!`);
+                throw new AppError(`The customer with id: ${id} does not exist!`,undefined,404);
             }else{
                 throw error
             }
@@ -41,9 +46,8 @@ export class CustomerRepo implements ICustomerRepo{
 
     async findBy(filter: IObject): Promise<Customer> {
         let customer!:Customer;
-        console.log(filter.by)
         customer =  await this.ormRepository.findOneOrFail({
-                where: { ...filter.by}
+                where: filter.by
             })
         return  customer
     }

@@ -34,15 +34,16 @@ export class CustomerRoutes{
     customer(){
         const profileRouter= Router()
         profileRouter.use(isAuthorized([role.CUSTOMER]))
-        .get("/profile",
+        .get("/",
             async(req:Request,res:Response)=>{this.customerProfileHandler.getProfile(req, res)})
-        .put("/profile-edit",sharedV.profile.edit,
+        .put("/edit",sharedV.profile.edit,
             async(req:Request,res:Response)=>{this.customerProfileHandler.editProfile(req, res)})
         .put("/change-password",v.profile.change_password,
             async(req:Request,res:Response)=>{this.customerProfileHandler.changePassword(req, res)})
-        .put("/change-profile-photo",
+        .put("/change-photo",
             async(req:Request,res:Response)=>{this.customerProfileHandler.addProfilePhoto(req, res)})
-        return profileRouter
+
+        return Router().use("/profile", profileRouter)
     }
     admin(){
         const customerRouter= Router()

@@ -30,4 +30,8 @@ export class  Vehicle extends BaseEntity{
 
     @UpdateDateColumn()
     updated_at!:Date
+
+    @ManyToOne(() => Driver,(driver) => driver.vehicles, {onDelete:"CASCADE"})
+    @JoinColumn({name:"driver_id"})
+    driver!: Driver
 }

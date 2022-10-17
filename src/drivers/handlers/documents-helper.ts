@@ -1,27 +1,28 @@
-import { driverDocumentsImgUrl } from "../../shared/multer/image-uploads";
+import { driverDocumentsImgUrl, EnforceHttpUrl } from "../../shared/multer/image-uploads";
 import { DriverDocumentsOut, DriverDocumentsIn } from "../domain/dto/driver-docs.dto";
-import {Request, Response} from "express"
+import {Request} from "express"
 export const documentsFields = [
-    {name:  "national_id"},
+    {name:  "national_id", },
     {name:  "drivers_license"},
     {name:  "defensive_drivers_license"},
     {name:  "police_clearance"},
     {name:  "vehicle_technical_certificate"},
     {name:  "vehicle_insurance_registration"},
 ]
-export  async function documentsOutFunc({national_id, drivers_license,defensive_drivers_license, police_clearance, vehicle_insurance_registration, vehicle_technical_certificate}:DriverDocumentsOut ):Promise<DriverDocumentsOut>{
+export  function documentsOutFunc(req:Request,{national_id, drivers_license,defensive_drivers_license, police_clearance, vehicle_insurance_registration, vehicle_technical_certificate}:DriverDocumentsOut, driver_id?:string ):DriverDocumentsOut{
+   const path =driverDocumentsImgUrl+"_"+driver_id+"/"
     const data:DriverDocumentsOut={
-        national_id: driverDocumentsImgUrl+ national_id,
-        drivers_license: driverDocumentsImgUrl+drivers_license,
-        defensive_drivers_license: driverDocumentsImgUrl+defensive_drivers_license,
-        police_clearance: driverDocumentsImgUrl+police_clearance,
-        vehicle_technical_certificate: driverDocumentsImgUrl+vehicle_technical_certificate,
-        vehicle_insurance_registration: driverDocumentsImgUrl+vehicle_insurance_registration,
+        national_id: EnforceHttpUrl(req, national_id, path),
+        drivers_license: EnforceHttpUrl(req, drivers_license, path),
+        defensive_drivers_license:EnforceHttpUrl(req, defensive_drivers_license, path),
+        police_clearance: EnforceHttpUrl(req, police_clearance, path),
+        vehicle_technical_certificate: EnforceHttpUrl(req, vehicle_technical_certificate, path),
+        vehicle_insurance_registration: EnforceHttpUrl(req, vehicle_insurance_registration, path),
     }
     return data
 }
 
-export  async function documentsInFunc(req:Request, driver_id:string):Promise<DriverDocumentsIn>{
+export   function documentsInFunc(req:Request, driver_id:string):DriverDocumentsIn{
     const files= req.files  as  {[fieldname: string]: Express.Multer.File[]};
     /* req.files is an object (String -> Array) where fieldname is the key, and the value is array of files
         e.g.
@@ -42,7 +43,7 @@ export  async function documentsInFunc(req:Request, driver_id:string):Promise<Dr
 export type UpdateDocumentsIn={
     [key:string]: string
 }
-export  async function documentsInUpdateFunc(req:Request):Promise<UpdateDocumentsIn>{
+export   function documentsInUpdateFunc(req:Request):UpdateDocumentsIn{
     const files= req.files  as  {[fieldname: string]: Express.Multer.File[]};
     const keys=["national_id", "drivers_license", "defensive_drivers_license", "police_clearance", "vehicle_technical_certificate", "vehicle_insurance_registration"]
     let result:UpdateDocumentsIn={};

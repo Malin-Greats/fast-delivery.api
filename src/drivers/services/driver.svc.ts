@@ -1,4 +1,5 @@
 import { IRoleRepository } from "../../auth/ports/role-repository.port";
+import { IObject } from "../../shared/dto/filter-by.dto";
 import logger from "../../shared/errors/logger";
 import {  DriverIn, DriverOut, IDriverApprovalStatus, toDriverOut } from "../domain/dto/driver.dto";
 import { IDriverRepository } from "../ports/driver-repository.port";
@@ -10,7 +11,6 @@ export class DriverService implements IDriverService{
     constructor(private _driverRepository:IDriverRepository,  private _roleRepository:IRoleRepository){}
 
     async registerDriver(driverIn: DriverIn): Promise<DriverOut> {
-    
         const role= await this._roleRepository.findByName(driverIn.role)
        const driver = await this._driverRepository.save(driverIn, role)
         const driverOut = toDriverOut(driver)
@@ -33,6 +33,19 @@ export class DriverService implements IDriverService{
         }
         return driversOut
     }
+
+    async deleteDriver(id: string): Promise<DriverOut> {
+        const driver= await this._driverRepository.delete(id)
+        const driverOut= toDriverOut(driver)
+        return driverOut
+    }
+
+    async updateDriver(id:string,requestIn:IObject): Promise<DriverOut> {
+        const driver= await this._driverRepository.update(id, requestIn)
+        const driverOut= toDriverOut(driver)
+        return driverOut
+    }
+
 
     async approveDriver(driverId: string): Promise<DriverApprovalStatus> {
         const aprovalStatus = {approval_status:DriverApprovalStatus.APPROVED}

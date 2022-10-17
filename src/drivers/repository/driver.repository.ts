@@ -1,8 +1,7 @@
 import { EntityNotFoundError, Repository } from "typeorm";
 import { Role } from "../../auth/domain/role.model";
 import { IObject } from "../../shared/dto/filter-by.dto";
-import AppError from "../../shared/errors/error";
-import logger from "../../shared/errors/logger";
+import AppError, { isError } from "../../shared/errors/error";
 import { Driver } from "../domain/driver.model";
 import { DriverIn, NewDriver } from "../domain/dto/driver.dto";
 import { IDriverRepository } from "../ports/driver-repository.port";
@@ -25,7 +24,11 @@ export class DriverRepository implements IDriverRepository{
         try {
             saved=await this.ormRepository.save(driver)
         } catch (error ) {
-            logger.error(error)
+            const {code} = <{code:string}>error
+            if (code==="23505"){
+                let  err =error as AppError
+                throw new AppError("User already exist: ", err.detail)
+            }
             throw error
         }
         return saved
@@ -38,8 +41,8 @@ export class DriverRepository implements IDriverRepository{
                 where: { id }
             })
         } catch (error) {
-            if (error instanceof EntityNotFoundError){
-                throw new AppError(`The driver with id: ${id} does not exist!`);
+            if (error instanceof EntityNotFoundError && isError(error)){
+                throw new AppError(`The driver with id: ${id} does not exist!`, error.detail, 404);
             }else{
                 throw error
             }

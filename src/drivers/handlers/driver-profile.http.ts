@@ -127,7 +127,7 @@ export class DriverProfileHandler{
         const {userId} = <Payload>await getPayload(req, res)
         try {
             const data=  await this._documentsSvc.findDocumentsBy({by:{driver_id:userId}})
-            apiResponse.data =await documentsOutFunc(data)
+            apiResponse.data =await documentsOutFunc(req, data)
             apiResponse.success = true
         } catch (error) {
             if (isError(error)){
@@ -151,7 +151,7 @@ export class DriverProfileHandler{
                     try {
                         const requestIn = await documentsInUpdateFunc(req)
                         const data=  await this._documentsSvc.updateDocuments({by:{driver_id:userId}},{ by:requestIn})
-                        apiResponse.data =await documentsOutFunc(data)
+                        apiResponse.data =await documentsOutFunc(req, data)
                         apiResponse.success = true
                     } catch (error) {
                         if (isError(error)){
@@ -190,7 +190,7 @@ export class DriverProfileHandler{
                         for (let file of filenames){
                             removeFile(UPLOAD_DOCS_PATH+"/"+file)
                         }
-                        apiResponse.data =await documentsOutFunc(data)
+                        apiResponse.data =await documentsOutFunc(req, data)
                         apiResponse.success=true
                     } catch (error) {
                         if (isError(error)){
@@ -227,7 +227,7 @@ export class DriverProfileHandler{
             for (let file of filenames){
                 removeFile(UPLOAD_DOCS_PATH+"/"+file)
             }
-            apiResponse.data =await documentsOutFunc(data)
+            apiResponse.data =await documentsOutFunc(req, data)
             apiResponse.success = true
         } catch (error) {
             if (isError(error)){
